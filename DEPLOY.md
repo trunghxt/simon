@@ -1,84 +1,116 @@
-# Hướng Dẫn Public Website "Toán Vui Cho Bé"
+# Hướng Dẫn Public Website "Toán Vui Cho Bé" trên Server Riêng (VPS)
 
-Tài liệu này sẽ hướng dẫn bạn đưa website từ máy tính cá nhân lên mạng Internet để ai cũng có thể truy cập được.
+Tài liệu này hướng dẫn bạn triển khai ứng dụng trên máy chủ riêng (VPS/Dedicated Server) đã cài sẵn MongoDB và có tên miền.
 
-Chúng ta sẽ sử dụng bộ 3 dịch vụ "Miễn Phí & Ngon" nhất hiện nay:
-1.  **MongoDB Atlas**: Chứa cơ sở dữ liệu (Cloud).
-2.  **Render.com**: Chạy Backend (Python FastAPI).
-3.  **Vercel**: Chạy Frontend (Giao diện web).
-
----
-
-## Bước 1: Chuẩn bị Github
-Đảm bảo mã nguồn dự án của bạn đã được đẩy lên **GitHub**.
-Nếu chưa, hãy tạo repository mới và push toàn bộ code lên đó (bao gồm thư mục `backend` và `frontend`).
+Giả định:
+- Hệ điều hành Server: **Linux (Ubuntu/CentOS)** hoặc **Windows Server**.
+- Đã cài đặt **Python 3.9+**.
+- Đã cài đặt **MongoDB**.
+- Đã có tên miền (ví dụ: `toanvuichobe.com`).
 
 ---
 
-## Bước 2: Tạo Database trên MongoDB Atlas (Nếu chưa có)
-Vì khi chạy online, backend không thể kết nối tới máy tính local của bạn, nên ta cần một Database trên mây.
-
-1.  Truy cập [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) và đăng nhập.
-2.  Tạo một **Cluster** mới (chọn gói **M0 FREE**).
-3.  Trong phần **Network Access**, chọn "Allow Access from Anywhere" (0.0.0.0/0) để server Render có thể kết nối vào.
-4.  Trong phần **Database Access**, tạo một user mới (ví dụ: `simon_admin`) và nhớ mật khẩu.
-5.  Lấy chuỗi kết nối (Connection String):
-    *   Nhấn **Connect** -> **Connect your application**.
-    *   Copy chuỗi dạng: `mongodb+srv://<username>:<password>@cluster0.xxx.mongodb.net/?retryWrites=true&w=majority`
-    *   Thay `<username>` và `<password>` bằng thông tin bạn vừa tạo.
-    *   **Lưu chuỗi này lại**, chúng ta sẽ cần nó ở Bước 3.
+## 1. Kiến trúc Triển khai
+Chúng ta sẽ sử dụng mô hình sau:
+- **Nginx**: Làm Web Server chính.
+    - Phục vụ file Frontend (HTML/CSS/JS) tại `/`.
+    - Reverse Proxy các request `/api` tới Backend đang chạy ở port 5000.
+- **Backend**: Chạy dưới dạng Service (systemd hoặc nssm) tại `localhost:5000`.
+- **Database**: MongoDB chạy tại `localhost:27017`.
 
 ---
 
-## Bước 3: Deploy Backend lên Render.com
+## 2. Setup Backend trên Server
 
-1.  Truy cập [Render.com](https://render.com/) và đăng nhập bằng tài khoản GitHub.
-2.  Nhấn **New +** -> **Web Service**.
-3.  Chọn repository GitHub **simon**.
-4.  Điền các thông tin sau:
-    *   **Name**: `simon-backend` (hoặc tên tùy thích).
-    *   **Region**: Singapore (cho gần Việt Nam).
-    *   **Root Directory**: `backend` (Rất quan trọng! Vì code python nằm trong thư mục này).
-    *   **Environment**: Python 3.
-    *   **Build Command**: `pip install -r requirements.txt`
-    *   **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-    *   **Instance Type**: Free.
-5.  Kéo xuống phần **Environment Variables**, bấm **Add Environment Variable** để thêm các biến sau:
-    *   `MONGODB_URI`: Dán chuỗi kết nối MongoDB Atlas ở Bước 2 vào đây.
-    *   `MONGODB_DB_NAME`: `simon_math`
-    *   `JWT_SECRET_KEY`: (Copy key trong file .env local hoặc tạo key mới bất kỳ).
-    *   `PYTHON_VERSION`: `3.9.0` (Hoặc phiên bản python bạn muốn, Render mặc định hỗ trợ 3.7+).
-6.  Nhấn **Create Web Service**.
+1.  **Copy mã nguồn**: Upload thư mục `backend` lên server (ví dụ tại `/var/www/simon/backend`).
+2.  **Cài đặt môi trường**:
+    ```bash
+    cd /var/www/simon/backend
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    ```
+3.  **Cấu hình .env**:
+    - Tạo file `.env` từ `.env.example`.
+    - `MONGODB_URI=mongodb://localhost:27017` (Vì Mongo chạy ngay trên server này).
+    - `JWT_SECRET_KEY`: (Điền key bảo mật).
 
-⏳ Chờ khoảng vài phút để Render cài đặt và khởi động. Khi nào thấy dấu tick xanh ✅ và chữ **Live** là thành công.
-Copy URL của backend vừa tạo (ví dụ: `https://simon-backend.onrender.com`).
+4.  **Chạy thử**:
+    ```bash
+    python -m uvicorn app.main:app --port 5000
+    ```
+    Nếu chạy ok thì tắt đi và cấu hình chạy ngầm (Daemon).
 
----
+5.  **Cấu hình chạy ngầm (Systemd - Linux)**:
+    - Tạo file `/etc/systemd/system/simon-backend.service`:
+      ```ini
+      [Unit]
+      Description=Simon Math API
+      After=network.target
 
-## Bước 4: Cập nhật Frontend và Deploy lên Vercel
+      [Service]
+      User=root
+      WorkingDirectory=/var/www/simon/backend
+      Environment="PATH=/var/www/simon/backend/venv/bin"
+      ExecStart=/var/www/simon/backend/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 5000
+      Restart=always
 
-### 4.1 Cập nhật URL Backend
-1.  Quay lại VS Code trên máy.
-2.  Mở file `frontend/js/api.js`.
-3.  Tìm dòng `const PRODUCTION_API_URL = ...`
-4.  Thay thế URL giả bằng URL thật bạn vừa copy từ Render (nhớ thêm `/api` ở cuối).
-    *   Ví dụ: `const PRODUCTION_API_URL = 'https://simon-backend.onrender.com/api';`
-5.  **Quan trọng:** Commit và Push thay đổi này lên GitHub.
-
-### 4.2 Deploy lên Vercel
-1.  Truy cập [Vercel.com](https://vercel.com/) và đăng nhập bằng GitHub.
-2.  Nhấn **Add New...** -> **Project**.
-3.  Import repository GitHub **simon**.
-4.  Trong phần cài đặt **Build & Output Settings**:
-    *   **Root Directory**: Nhấn Edit và chọn thư mục `frontend`. (Quan trọng: Vì ta chỉ muốn deploy folder frontend).
-5.  Nhấn **Deploy**.
-
-⏳ Vercel chạy cực nhanh, chỉ mất khoảng 30 giây là xong.
-Sau khi xong, Vercel sẽ cấp cho bạn một tên miền (ví dụ: `simon-math.vercel.app`).
+      [Install]
+      WantedBy=multi-user.target
+      ```
+    - Start service:
+      ```bash
+      sudo systemctl enable simon-backend
+      sudo systemctl start simon-backend
+      ```
 
 ---
 
-## Bước 5: Tận hưởng
-Truy cập vào tên miền Vercel cấp. Bây giờ bạn có thể gửi link này cho mọi người, cho bé dùng trên iPad, điện thoại thoải mái mà không cần bật máy tính của bạn nữa!
+## 3. Setup Frontend & Nginx
 
-Chúc bạn thành công! 🚀
+1.  **Copy mã nguồn**: Upload thư mục `frontend` lên server (ví dụ tại `/var/www/simon/frontend`).
+2.  **Cấu hình API URL**:
+    - Mở file `/var/www/simon/frontend/js/api.js`.
+    - Sửa dòng `const PRODUCTION_API_URL` thành:
+      ```javascript
+      // Vì dùng Nginx proxy cùng domain, ta chỉ cần trỏ về /api
+      const PRODUCTION_API_URL = '/api'; 
+      ```
+      *(Lưu ý: Nếu cấu hình Nginx chuẩn như dưới đây, frontend sẽ tự hiểu gọi vào chính domain hiện tại)*
+
+3.  **Cấu hình Nginx**:
+    - Tạo config file (ví dụ `/etc/nginx/sites-available/simon`):
+      ```nginx
+      server {
+          listen 80;
+          server_name toanvuichobe.com www.toanvuichobe.com;
+
+          # Frontend (Static Files)
+          location / {
+              root /var/www/simon/frontend;
+              index index.html;
+              try_files $uri $uri/ /index.html;
+              add_header Cache-Control "no-cache";
+          }
+
+          # Backend API (Reverse Proxy)
+          location /api {
+              proxy_pass http://127.0.0.1:5000;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+          }
+      }
+      ```
+    - Kích hoạt và Restart Nginx:
+      ```bash
+      sudo ln -s /etc/nginx/sites-available/simon /etc/nginx/sites-enabled/
+      sudo systemctl restart nginx
+      ```
+
+---
+
+## 4. Kiểm tra
+1.  Truy cập website: `http://toanvuichobe.com`.
+2.  Thử đăng ký/đăng nhập. Yêu cầu sẽ đi từ `Browser` -> `Nginx (port 80)` -> `Proxy /api` -> `Backend (port 5000)` -> `MongoDB`.
+
+Chúc mừng bạn đã làm chủ hoàn toàn hệ thống! 🎉
