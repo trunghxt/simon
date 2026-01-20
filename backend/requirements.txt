@@ -4,7 +4,8 @@ motor
 pydantic
 pydantic-settings
 python-multipart
-passlib[bcrypt]
+# passlib[bcrypt] -> Removed
+bcrypt
 python-jose[cryptography]
 python-dotenv
 email_validator

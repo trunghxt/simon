@@ -33,6 +33,6 @@
 
 ## Testing & Verification
 - [x] Test kết nối MongoDB Local (Cần user cài Python)
-- [ ] Test API Authorization (Swagger UI)
+- [x] Test API Authorization (Swagger UI)
 - [x] Test End-to-End flow trên Frontend
 - [x] Tạo walkthrough documentation

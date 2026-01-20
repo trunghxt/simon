@@ -1,4 +1,10 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+// Tự động phát hiện môi trường:
+// Nếu đang chạy trên localhost (127.0.0.1 hoặc localhost), dùng backend local.
+// Ngược lại, dùng backend production (Bác sẽ điền URL backend của Render vào đây sau)
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const PRODUCTION_API_URL = 'https://YOUR-BACKEND-NAME.onrender.com/api'; // Thay URL này sau khi deploy backend
+
+const API_BASE_URL = IS_LOCAL ? 'http://localhost:5000/api' : PRODUCTION_API_URL;
 
 class ApiClient {
     constructor() {

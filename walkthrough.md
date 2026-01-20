@@ -69,10 +69,22 @@ Bạn sẽ thấy trang Swagger UI hiển thị danh sách các API (Auth, Quiz)
 ## 5. Chạy Frontend
 
 1.  Mở thư mục `frontend` trong VS Code.
-2.  Cách tốt nhất là sử dụng extension **Live Server** trong VS Code:
-    *   Click chuột phải vào file `index.html`.
-    *   Chọn **"Open with Live Server"**.
-3.  Trình duyệt sẽ mở trang web.
+### Cách 1: Sử dụng Live Server (VS Code Extension)
+1.  Click chuột phải vào file `index.html`.
+2.  Chọn **"Open with Live Server"**. (Lưu ý: Port mặc định của Live Server là 5500, nhưng mã nguồn đã cấu hình để frontend chạy ở port nào cũng gọi được API port 5000).
+
+### Cách 2: Sử dụng Python HTTP Server (Khuyên dùng nếu không có VS Code Extensions)
+1.  Mở terminal tại thư mục `frontend`:
+    ```bash
+    cd frontend
+    ```
+2.  Chạy lệnh:
+    ```bash
+    py -m http.server 8000
+    ```
+3.  Mở trình duyệt: [http://localhost:8000](http://localhost:8000)
+
+**LƯU Ý QUAN TRỌNG:** Không mở trực tiếp file bằng cách double-click (đường dẫn `file:///...`) vì trình duyệt sẽ chặn gọi API do chính sách bảo mật (CORS/URL Protocol). Bắt buộc phải chạy qua localhost.
 
 ## 6. Quy trình Kiểm tra Chức năng (End-to-End Testing)
 
