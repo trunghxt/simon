@@ -100,6 +100,10 @@ class ApiClient {
     async getMe() {
         return this.request('/auth/me', { method: 'GET' });
     }
+
+    async getLeaderboard() {
+        return this.request('/stats/leaderboard', { method: 'GET' });
+    }
 }
 
 // Expose as global API object to match index.html expectation

@@ -304,6 +304,13 @@
                 </div>
 
                 <div class="flex items-center space-x-4">
+                    <!-- Leaderboard Button -->
+                    <button onclick="Leaderboard.show()"
+                        class="bg-yellow-400 hover:bg-yellow-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110"
+                        title="Bảng Xếp Hạng">
+                        <i class="fa-solid fa-trophy"></i>
+                    </button>
+
                     <!-- User Profile Section -->
                     <div id="user-section"></div>
 
@@ -1172,6 +1179,39 @@
     </div>
 
     <!-- Module Logic -->
+    <!-- LEADERBOARD MODAL -->
+    <div id="leaderboard-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl transform transition-all scale-100">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 p-6 text-white text-center relative">
+                <button onclick="Leaderboard.hide()"
+                    class="absolute top-4 right-4 text-white hover:text-yellow-100 transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+                <div class="text-6xl mb-2">🏆</div>
+                <h2 class="text-3xl font-black">Bảng Xếp Hạng</h2>
+                <p class="text-yellow-100 font-bold">Top các nhà toán học nhí</p>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <div id="leaderboard-list" class="space-y-3">
+                    <!-- Leaderboard items will be injected here -->
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
+                        <div>Đang tải bảng xếp hạng...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
+                <p class="text-sm text-gray-500">Cố gắng luyện tập để lên top nhé! 💪</p>
+            </div>
+        </div>
+    </div>
+
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script>
@@ -2789,6 +2829,8 @@
                 alert("Chức năng xem lại câu sai đang được phát triển. Ở phiên bản tương lai, bé sẽ có thể xem lại và làm lại các câu đã sai!");
             },
 
+            // --- LEADERBOARD LOGIC ---
+
             toggleHistory: function () {
                 const practiceView = document.getElementById('div-view-practice');
                 const historyView = document.getElementById('div-view-history');
@@ -2812,6 +2854,89 @@
                     localStorage.removeItem(this.key);
                     renderHistoryTable(this.key, 'div-history-list', 'div-history-empty');
                 }
+            }
+        };
+
+        const Leaderboard = {
+            show: async function () {
+                const modal = document.getElementById('leaderboard-modal');
+                const list = document.getElementById('leaderboard-list');
+
+                modal.classList.remove('hidden');
+
+                // Show loading state
+                list.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
+                        <div>Đang tải bảng xếp hạng...</div>
+                    </div>
+                `;
+
+                try {
+                    const res = await API.getLeaderboard();
+                    if (res.success) {
+                        this.render(res.data);
+                    } else {
+                        list.innerHTML = `<div class="text-center text-red-500">Không thể tải bảng xếp hạng :(</div>`;
+                    }
+                } catch (e) {
+                    console.error(e);
+                    list.innerHTML = `<div class="text-center text-red-500">Lỗi kết nối :(</div>`;
+                }
+            },
+
+            hide: function () {
+                document.getElementById('leaderboard-modal').classList.add('hidden');
+            },
+
+            render: function (data) {
+                const list = document.getElementById('leaderboard-list');
+
+                if (!data || data.length === 0) {
+                    list.innerHTML = `
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fa-solid fa-ghost text-4xl mb-3 opacity-30"></i>
+                            <div>Chưa có ai trong bảng xếp hạng cả.</div>
+                            <div class="text-sm mt-1">Hãy là người đầu tiên!</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                data.forEach((user, index) => {
+                    let rankClass = 'bg-gray-100 text-gray-600';
+                    let rankIcon = `<span class="font-bold text-lg w-6 text-center">${index + 1}</span>`;
+
+                    if (index === 0) {
+                        rankClass = 'bg-yellow-100 border-2 border-yellow-300';
+                        rankIcon = '<i class="fa-solid fa-crown text-yellow-500 text-2xl"></i>';
+                    } else if (index === 1) {
+                        rankClass = 'bg-gray-200 border-2 border-gray-300';
+                        rankIcon = '<i class="fa-solid fa-medal text-gray-400 text-2xl"></i>';
+                    } else if (index === 2) {
+                        rankClass = 'bg-orange-100 border-2 border-orange-200';
+                        rankIcon = '<i class="fa-solid fa-medal text-orange-600 text-2xl"></i>';
+                    }
+
+                    html += `
+                        <div class="flex items-center p-3 rounded-xl ${rankClass} transition-transform hover:scale-[1.02]">
+                            <div class="w-10 flex justify-center mr-3">
+                                ${rankIcon}
+                            </div>
+                            <div class="flex-grow">
+                                <div class="font-black text-gray-800 truncate">${user.name || user.email.split('@')[0]}</div>
+                                <div class="text-xs text-gray-500 font-bold">Cấp ${user.level}</div>
+                            </div>
+                            <div class="flex items-center bg-white px-3 py-1 rounded-lg shadow-sm">
+                                <span class="font-black text-yellow-500 text-lg mr-1">${user.total_stars}</span>
+                                <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                list.innerHTML = html;
             }
         };
 

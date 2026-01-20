@@ -18,7 +18,7 @@
 - [x] Implement Authentication (JWT, OAuth2)
 - [x] Tạo API Endpoints: Auth (Register/Login)
 - [x] Tạo API Endpoints: Quiz (Submit, History)
-- [ ] Tạo API Endpoints: Stats (Leaderboard)
+- [x] Tạo API Endpoints: Stats (Leaderboard)
 
 ## Frontend Integration
 - [x] Cập nhật index.html (Login Modal, Profile)
@@ -32,7 +32,7 @@
 - [x] Cập nhật task.md
 
 ## Testing & Verification
-- [ ] Test kết nối MongoDB Local (Cần user cài Python)
+- [x] Test kết nối MongoDB Local (Cần user cài Python)
 - [ ] Test API Authorization (Swagger UI)
-- [ ] Test End-to-End flow trên Frontend
+- [x] Test End-to-End flow trên Frontend
 - [x] Tạo walkthrough documentation

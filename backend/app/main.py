@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routes import auth, quiz
+from app.routes import auth, quiz, stats
 
 app = FastAPI(title="Simon Math API")
 
@@ -17,6 +17,7 @@ app.add_middleware(
 # Routes
 app.include_router(auth.router, prefix="/api")
 app.include_router(quiz.router, prefix="/api")
+app.include_router(stats.router, prefix="/api")
 
 @app.get("/health")
 async def health_check():

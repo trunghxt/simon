@@ -18,3 +18,8 @@ class UserModel:
             return await db.users.find_one({"_id": ObjectId(user_id)})
         except:
             return None
+
+    @staticmethod
+    async def get_leaderboard(limit: int = 10):
+        cursor = db.users.find({}, {"name": 1, "total_stars": 1, "level": 1, "_id": 0}).sort("total_stars", -1).limit(limit)
+        return await cursor.to_list(length=limit)

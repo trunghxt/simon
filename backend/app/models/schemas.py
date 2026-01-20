@@ -46,3 +46,8 @@ class QuizHistoryItem(BaseModel):
     stars: int
     time: int
     date: str
+
+class LeaderboardEntry(BaseModel):
+    name: str | None
+    total_stars: int
+    level: int
