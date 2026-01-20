@@ -1,13 +1,13 @@
-# Implementation Plan: FastAPI + MongoDB Cloud Web Application
+# Implementation Plan: FastAPI + MongoDB Local Web Application
 
 ## Tổng quan
 
-Xây dựng backend Python **FastAPI** (high performance) với **MongoDB Cloud** để hỗ trợ ứng dụng "Toán Vui Cho Bé". Hệ thống sử dụng kiến trúc bất đồng bộ (Async/Await) và xác thực người dùng qua JWT.
+Xây dựng backend Python **FastAPI** (high performance) với **MongoDB Local** để hỗ trợ ứng dụng "Toán Vui Cho Bé". Hệ thống sử dụng kiến trúc bất đồng bộ (Async/Await) và xác thực người dùng qua JWT.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **MongoDB Cloud**: Chúng ta sẽ không chạy MongoDB container local nữa. Bạn cần cung cấp Connection String từ MongoDB Atlas (Cloud) vào file `.env`.
+> **MongoDB Local**: Dự án sử dụng MongoDB đã cài đặt trên máy local (localhost:27017). Database `simon_math` sẽ được tự động tạo khi có dữ liệu đầu tiên.
 
 > [!NOTE]
 > **API Documentation**: FastAPI tự động tạo docs tại `/docs` (Swagger UI), rất tiện lợi cho việc kiểm thử API.
@@ -74,8 +74,9 @@ Logic tương tác database (Motor):
 ## Verification Plan
 
 ### 1. Setup Environment
-- Tạo file `.env` với `MONGODB_URL` thực tế.
-- Cài đặt requirements: `pip install -r backend/requirements.txt`.
+- Đảm bảo MongoDB đang chạy trên local (kiểm tra qua MongoDB Compass hoặc `mongosh`)
+- Copy file `.env.example` thành `.env` và cập nhật `JWT_SECRET_KEY`
+- Cài đặt requirements: `pip install -r backend/requirements.txt`
 
 ### 2. Backend Verification
 - Chạy server: `uvicorn backend.app.main:app --reload`.

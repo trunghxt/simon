@@ -1,4 +1,4 @@
-# Task: Xây dựng ứng dụng web FastAPI + MongoDB Cloud cho "Toán Vui Cho Bé"
+# Task: Xây dựng ứng dụng web FastAPI + MongoDB Local cho "Toán Vui Cho Bé"
 
 ## Planning Phase
 - [x] Tạo implementation plan
@@ -6,8 +6,9 @@
 
 ## Setup Infrastructure
 - [x] Tạo cấu trúc thư mục backend
-- [x] Cấu hình biến môi trường (.env) cho MongoDB Cloud
+- [x] Cấu hình biến môi trường (.env) cho MongoDB Local
 - [x] Tạo requirements.txt với dependencies (FastAPI, Motor)
+- [x] Tạo file .env.example
 
 ## Backend Development (FastAPI)
 - [x] Setup FastAPI application structure
@@ -25,8 +26,13 @@
 - [x] Tích hợp Authentication Flow
 - [x] Tích hợp Quiz Submission & History
 
+## Documentation Update (MongoDB Cloud → Local)
+- [x] Cập nhật implementation_plan.md
+- [x] Cập nhật walkthrough.md
+- [x] Cập nhật task.md
+
 ## Testing & Verification
-- [ ] Test kết nối MongoDB Cloud (Cần user cài Python)
+- [ ] Test kết nối MongoDB Local (Cần user cài Python)
 - [ ] Test API Authorization (Swagger UI)
 - [ ] Test End-to-End flow trên Frontend
-- [ ] Tạo walkthrough documentation
+- [x] Tạo walkthrough documentation
