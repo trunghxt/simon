@@ -1,0 +1,2830 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toán Vui Cho Bé - Học Toán Thật Vui!</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Comic+Neue:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        comic: ['Comic Neue', 'cursive'],
+                    },
+                    colors: {
+                        'primary-pink': '#FF6B9D',
+                        'primary-orange': '#FF9A3D',
+                        'primary-green': '#4CAF50',
+                        'primary-blue': '#2196F3',
+                        'light-pink': '#FFF0F5',
+                        'light-orange': '#FFF3E0',
+                        'light-green': '#E8F5E9',
+                        'light-blue': '#E3F2FD',
+                        'dark-pink': '#D81B60',
+                        'dark-orange': '#F57C00',
+                        'dark-green': '#388E3C',
+                        'dark-blue': '#1976D2',
+                    },
+                    boxShadow: {
+                        'bubble': '0 8px 20px rgba(0,0,0,0.1)',
+                        'bubble-hover': '0 12px 25px rgba(0,0,0,0.15)',
+                        'comic': '5px 5px 0px 0px rgba(0,0,0,0.2)',
+                        'comic-sm': '3px 3px 0px 0px rgba(0,0,0,0.2)',
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'tada': 'tada 1s ease-in-out',
+                    },
+                    keyframes: {
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            transition: background-color 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        .bubble {
+            border-radius: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .bubble:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .fun-btn {
+            border-radius: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fun-btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .fun-btn:hover:after {
+            left: 100%;
+        }
+
+        .option-card {
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .option-card.selected {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .number-input {
+            font-size: 28px;
+            font-weight: 900;
+            text-align: center;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+
+        .number-input:focus {
+            border-color: #FF6B9D;
+            box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.2);
+        }
+
+        .star-rating {
+            color: #FFD700;
+            font-size: 24px;
+        }
+
+        .question-item {
+            transition: all 0.3s;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .question-item.correct {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-color: #4CAF50;
+        }
+
+        .question-item.wrong {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-color: #F44336;
+        }
+
+        .progress-bar {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #E0E0E0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .completion-badge {
+            background: linear-gradient(45deg, #FF6B9D, #FF9A3D);
+            color: white;
+            font-weight: 900;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .timer {
+            font-family: monospace;
+            font-size: 28px;
+            font-weight: 900;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 5px 15px;
+        }
+
+        /* Module switching */
+        .module-section {
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .module-section.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Nav tabs */
+        .nav-tab {
+            transition: all 0.3s;
+            border-radius: 15px;
+            font-weight: 800;
+        }
+
+        .nav-tab.active {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Decorative elements */
+        .decoration {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        /* Success animation */
+        @keyframes successPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .success-pulse {
+            animation: successPulse 0.5s ease-in-out;
+        }
+
+        /* History table */
+        .history-row {
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+
+        .history-row:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: translateX(5px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .fun-btn {
+                padding: 15px 20px !important;
+                font-size: 18px !important;
+            }
+
+            .number-input {
+                font-size: 22px !important;
+            }
+        }
+    </style>
+</head>
+
+<body id="main-body"
+    class="text-gray-800 min-h-screen flex flex-col font-sans bg-gradient-to-br from-light-pink to-white">
+
+    <!-- Decorative elements -->
+    <div class="decoration top-10 left-5 text-6xl">➕</div>
+    <div class="decoration top-20 right-10 text-5xl">➖</div>
+    <div class="decoration bottom-20 left-10 text-4xl">✖️</div>
+    <div class="decoration bottom-10 right-20 text-5xl">➗</div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 shadow-lg bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center py-4 gap-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="bg-gradient-to-br from-primary-pink to-primary-orange rounded-2xl w-14 h-14 flex items-center justify-center shadow-bubble">
+                        <i class="fa-solid fa-calculator text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1
+                            class="font-black text-2xl sm:text-3xl bg-gradient-to-r from-primary-pink to-primary-orange bg-clip-text text-transparent">
+                            Toán Vui Cho Bé
+                        </h1>
+                        <p class="text-gray-600 text-sm font-medium">Học toán thật vui, thật dễ!</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- User Profile Section -->
+                    <div id="user-section"></div>
+
+                    <!-- Navigation -->
+                    <div class="flex space-x-2 sm:space-x-3 overflow-x-auto pb-2">
+                        <button onclick="switchModule('addsub')" id="tab-addsub"
+                            class="nav-tab active px-5 py-3 bg-gradient-to-r from-primary-pink to-pink-500 text-white font-black">
+                            <i class="fa-solid fa-plus-minus mr-2"></i> Cộng Trừ
+                        </button>
+                        <button onclick="switchModule('mul')" id="tab-mul"
+                            class="nav-tab px-5 py-3 bg-gradient-to-r from-primary-orange to-orange-500 text-white font-black opacity-80">
+                            <i class="fa-solid fa-xmark mr-2"></i> Phép Nhân
+                        </button>
+                        <button onclick="switchModule('div')" id="tab-div"
+                            class="nav-tab px-5 py-3 bg-gradient-to-r from-primary-green to-green-500 text-white font-black opacity-80">
+                            <i class="fa-solid fa-divide mr-2"></i> Phép Chia
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-6 sm:py-8 max-w-6xl relative">
+
+        <!-- MODULE: CỘNG TRỪ -->
+        <div id="module-addsub" class="module-section active">
+            <!-- Practice View -->
+            <div id="addsub-view-practice" class="space-y-8">
+                <!-- Welcome Card -->
+                <div class="bubble bg-white p-6 relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 text-8xl text-primary-pink opacity-10">🧮</div>
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div>
+                            <h2 class="text-3xl font-black text-primary-pink mb-2">Cộng & Trừ Vui Vẻ</h2>
+                            <p class="text-gray-600 max-w-xl">Chọn loại phép tính, điều chỉnh độ khó và bắt đầu luyện
+                                tập nhé! Mỗi câu đúng sẽ nhận được sao vàng 🌟</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                            <button onclick="AddSub.toggleHistory()"
+                                class="fun-btn bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 px-5 py-3 border-2 border-gray-300">
+                                <i class="fa-solid fa-history mr-2"></i> Lịch sử
+                            </button>
+                            <button onclick="AddSub.showInstructions()"
+                                class="fun-btn bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-5 py-3 border-2 border-blue-300">
+                                <i class="fa-solid fa-info-circle mr-2"></i> Hướng dẫn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration Card -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Phép tính -->
+                    <div class="bubble bg-white p-6">
+                        <h3 class="text-xl font-black text-primary-pink mb-4 flex items-center">
+                            <i class="fa-solid fa-check-circle mr-2"></i> Chọn Phép Tính
+                        </h3>
+                        <div class="space-y-4">
+                            <label class="option-card flex items-center p-4 bg-gray-50" id="card-add">
+                                <input type="checkbox" id="addsub-checkAdd" class="mr-4 h-5 w-5 text-primary-pink"
+                                    checked onchange="AddSub.updateCardStyle()">
+                                <div class="flex items-center">
+                                    <div class="bg-primary-pink text-white p-3 rounded-xl mr-3">
+                                        <i class="fa-solid fa-plus text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-black">Phép Cộng</div>
+                                        <div class="text-sm text-gray-500">Cộng các số với nhau</div>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="option-card flex items-center p-4 bg-gray-50" id="card-sub">
+                                <input type="checkbox" id="addsub-checkSub" class="mr-4 h-5 w-5 text-primary-pink"
+                                    checked onchange="AddSub.updateCardStyle()">
+                                <div class="flex items-center">
+                                    <div class="bg-primary-blue text-white p-3 rounded-xl mr-3">
+                                        <i class="fa-solid fa-minus text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-black">Phép Trừ</div>
+                                        <div class="text-sm text-gray-500">Trừ các số với nhau</div>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="option-card flex items-center p-4 bg-gray-50" id="card-carry">
+                                <input type="checkbox" id="addsub-checkCarry" class="mr-4 h-5 w-5 text-primary-pink"
+                                    onchange="AddSub.updateCardStyle()">
+                                <div class="flex items-center">
+                                    <div class="bg-primary-orange text-white p-3 rounded-xl mr-3">
+                                        <i class="fa-solid fa-brain text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-black">Có Nhớ/Mượn</div>
+                                        <div class="text-sm text-gray-500">Thử thách hơn</div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Cấu hình -->
+                    <div class="bubble bg-white p-6">
+                        <h3 class="text-xl font-black text-primary-pink mb-4 flex items-center">
+                            <i class="fa-solid fa-sliders mr-2"></i> Điều Chỉnh Độ Khó
+                        </h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block font-bold mb-2 text-gray-700">Tổng lớn nhất (khi cộng):</label>
+                                <div class="flex items-center">
+                                    <input type="range" id="addsub-maxSum-slider" min="5" max="100" value="20"
+                                        class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-pink">
+                                    <span id="addsub-maxSum-value"
+                                        class="ml-4 font-black text-primary-pink text-xl w-16 text-center">20</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block font-bold mb-2 text-gray-700">Số lớn nhất (khi trừ):</label>
+                                <div class="flex items-center">
+                                    <input type="range" id="addsub-maxSub-slider" min="5" max="100" value="20"
+                                        class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-blue">
+                                    <span id="addsub-maxSub-value"
+                                        class="ml-4 font-black text-primary-blue text-xl w-16 text-center">20</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-bold mb-2 text-gray-700">Số số hạng</label>
+                                    <div class="flex items-center space-x-2">
+                                        <button onclick="AddSub.changeOperands(-1)"
+                                            class="bg-gray-200 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center font-black text-xl">−</button>
+                                        <input type="number" id="addsub-numOperands" value="2" min="2" max="5"
+                                            class="number-input w-full py-2">
+                                        <button onclick="AddSub.changeOperands(1)"
+                                            class="bg-gray-200 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center font-black text-xl">+</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block font-bold mb-2 text-gray-700">Số câu hỏi</label>
+                                    <div class="flex items-center space-x-2">
+                                        <button onclick="AddSub.changeQuestions(-5)"
+                                            class="bg-gray-200 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center font-black text-xl">−</button>
+                                        <input type="number" id="addsub-numQuestions" value="10" min="5" max="30"
+                                            class="number-input w-full py-2">
+                                        <button onclick="AddSub.changeQuestions(5)"
+                                            class="bg-gray-200 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center font-black text-xl">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Start Card -->
+                    <div
+                        class="bubble bg-gradient-to-br from-primary-pink to-pink-500 p-6 flex flex-col justify-center items-center text-center">
+                        <div class="text-white mb-6">
+                            <div class="text-5xl mb-2">🧠</div>
+                            <h3 class="text-2xl font-black mb-2">Sẵn sàng chưa?</h3>
+                            <p class="opacity-90">Nhấn nút bên dưới để bắt đầu làm bài nhé!</p>
+                        </div>
+
+                        <button onclick="AddSub.generateQuiz()"
+                            class="fun-btn bg-white text-primary-pink text-2xl font-black py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fa-solid fa-play mr-3"></i> BẮT ĐẦU LUYỆN TẬP
+                        </button>
+
+                        <div class="mt-6 text-white text-sm">
+                            <div class="flex items-center justify-center space-x-4">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-star text-yellow-300 mr-1"></i> <span>Mỗi câu đúng = 1
+                                        sao</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock mr-1"></i> <span>Có tính giờ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Area -->
+                <div id="addsub-quiz-area" class="hidden">
+                    <!-- Timer and Progress -->
+                    <div class="bubble bg-white p-6 mb-6">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div>
+                                <div class="font-black text-lg text-gray-700">Tiến độ làm bài</div>
+                                <div class="flex items-center space-x-4 mt-2">
+                                    <div class="progress-bar w-48 md:w-64">
+                                        <div id="addsub-progress"
+                                            class="progress-fill bg-gradient-to-r from-primary-pink to-pink-500"
+                                            style="width: 0%"></div>
+                                    </div>
+                                    <span id="addsub-progress-text" class="font-black text-xl">0/10</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="text-sm text-gray-600">Thời gian</div>
+                                    <div id="addsub-timer" class="timer">00:00</div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <div class="text-sm text-gray-600">Sao</div>
+                                    <div id="addsub-stars" class="star-rating">☆☆☆☆☆</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questions -->
+                    <div id="addsub-questions-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"></div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-center mt-8">
+                        <button id="addsub-btn-submit" onclick="AddSub.submitAnswers()"
+                            class="fun-btn bg-gradient-to-r from-green-500 to-green-600 text-white text-xl font-black py-5 px-12 rounded-2xl shadow-lg transform hover:-translate-y-1">
+                            <i class="fa-solid fa-paper-plane mr-3"></i> NỘP BÀI NGAY
+                        </button>
+                    </div>
+
+                    <!-- Result -->
+                    <div id="addsub-result" class="hidden mt-8">
+                        <div
+                            class="bubble bg-gradient-to-br from-yellow-50 to-white p-8 text-center border-4 border-yellow-200 relative">
+                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                                <div class="completion-badge px-6 py-2">
+                                    <i class="fa-solid fa-trophy mr-2"></i> KẾT QUẢ
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <div class="text-6xl font-black text-gray-800 mb-2" id="addsub-score-text">0/10</div>
+                                <div class="text-xl font-bold text-gray-600 mb-2" id="addsub-score-msg"></div>
+                                <div class="flex justify-center my-4">
+                                    <div id="addsub-final-stars" class="star-rating text-3xl">☆☆☆☆☆</div>
+                                </div>
+                                <div class="text-gray-600 mb-4">
+                                    <div id="addsub-time-taken" class="mb-1"></div>
+                                    <div id="addsub-accuracy"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <button onclick="AddSub.resetQuiz()"
+                                    class="fun-btn bg-gradient-to-r from-primary-pink to-pink-500 text-white px-6 py-3 rounded-xl">
+                                    <i class="fa-solid fa-rotate-right mr-2"></i> Làm đề mới
+                                </button>
+                                <button onclick="AddSub.reviewWrongAnswers()" id="addsub-review-btn"
+                                    class="fun-btn bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hidden">
+                                    <i class="fa-solid fa-book-open mr-2"></i> Xem lại câu sai
+                                </button>
+                                <button onclick="AddSub.toggleHistory()"
+                                    class="fun-btn bg-gradient-to-r from-gray-500 to-gray-600 text-white px-6 py-3 rounded-xl">
+                                    <i class="fa-solid fa-history mr-2"></i> Xem lịch sử
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History View -->
+            <div id="addsub-view-history" class="hidden">
+                <div class="bubble bg-white p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-black text-primary-pink flex items-center">
+                            <i class="fa-solid fa-history mr-3"></i> Lịch sử luyện tập
+                        </h3>
+                        <div class="flex space-x-3">
+                            <button onclick="AddSub.toggleHistory()"
+                                class="fun-btn bg-gradient-to-r from-primary-pink to-pink-500 text-white px-5 py-2 rounded-xl">
+                                <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại
+                            </button>
+                            <button onclick="AddSub.clearHistory()"
+                                class="fun-btn bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2 rounded-xl">
+                                <i class="fa-solid fa-trash mr-2"></i> Xóa hết
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gradient-to-r from-primary-pink to-pink-500 text-white">
+                                <tr>
+                                    <th class="p-4 text-left rounded-l-xl">Ngày</th>
+                                    <th class="p-4 text-center">Số câu</th>
+                                    <th class="p-4 text-center">Đúng</th>
+                                    <th class="p-4 text-center">Sao</th>
+                                    <th class="p-4 text-center rounded-r-xl">Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addsub-history-list" class="font-bold">
+                                <!-- History rows will be inserted here -->
+                            </tbody>
+                        </table>
+                        <div id="addsub-history-empty" class="text-center py-10 text-gray-500 hidden">
+                            <i class="fa-solid fa-inbox text-5xl mb-4 opacity-30"></i>
+                            <div class="text-xl">Chưa có dữ liệu lịch sử</div>
+                            <p class="mt-2">Hãy làm bài để xem lịch sử tại đây!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE: PHÉP NHÂN -->
+        <div id="module-mul" class="module-section">
+            <!-- Practice View -->
+            <div id="mul-view-practice" class="space-y-8">
+                <!-- Welcome Card -->
+                <div class="bubble bg-white p-6 relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 text-8xl text-primary-orange opacity-10">✖️</div>
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div>
+                            <h2 class="text-3xl font-black text-primary-orange mb-2">Bảng Cửu Chương Vui</h2>
+                            <p class="text-gray-600 max-w-xl">Luyện tập bảng cửu chương thật vui! Chọn bảng nhân yêu
+                                thích và bắt đầu ngay nhé!</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                            <button onclick="Mul.toggleHistory()"
+                                class="fun-btn bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 px-5 py-3 border-2 border-orange-300">
+                                <i class="fa-solid fa-history mr-2"></i> Lịch sử
+                            </button>
+                            <button onclick="Mul.showInstructions()"
+                                class="fun-btn bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-5 py-3 border-2 border-blue-300">
+                                <i class="fa-solid fa-info-circle mr-2"></i> Hướng dẫn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration Card -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Chọn bảng -->
+                    <div class="bubble bg-white p-6">
+                        <h3 class="text-xl font-black text-primary-orange mb-4 flex items-center">
+                            <i class="fa-solid fa-table mr-2"></i> Chọn Bảng Nhân
+                        </h3>
+                        <div class="grid grid-cols-3 gap-3" id="mul-options">
+                            <!-- Options will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Cấu hình -->
+                    <div class="bubble bg-white p-6">
+                        <h3 class="text-xl font-black text-primary-orange mb-4 flex items-center">
+                            <i class="fa-solid fa-sliders mr-2"></i> Điều Chỉnh
+                        </h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block font-bold mb-2 text-gray-700">Số lượng câu:</label>
+                                <div class="flex items-center">
+                                    <input type="range" id="mul-numQuestions" min="5" max="30" value="10"
+                                        class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-orange">
+                                    <span id="mul-numDisplay"
+                                        class="ml-4 font-black text-primary-orange text-xl w-16 text-center">10</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-4">
+                                <label class="block font-bold mb-2 text-gray-700">Chế độ:</label>
+                                <div class="space-y-3">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="mul-timed" class="mr-3 h-5 w-5 accent-primary-orange"
+                                            checked>
+                                        <span>Tính thời gian làm bài</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="mul-mixed"
+                                            class="mr-3 h-5 w-5 accent-primary-orange">
+                                        <span>Trộn các bảng với nhau</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Start Card -->
+                    <div
+                        class="bubble bg-gradient-to-br from-primary-orange to-orange-500 p-6 flex flex-col justify-center items-center text-center">
+                        <div class="text-white mb-6">
+                            <div class="text-5xl mb-2">🚀</div>
+                            <h3 class="text-2xl font-black mb-2">Sẵn sàng chưa?</h3>
+                            <p class="opacity-90">Nhấn nút bên dưới để bắt đầu làm bài nhé!</p>
+                        </div>
+
+                        <button onclick="Mul.generateQuiz()"
+                            class="fun-btn bg-white text-primary-orange text-2xl font-black py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fa-solid fa-rocket mr-3"></i> BẮT ĐẦU
+                        </button>
+
+                        <div class="mt-6 text-white text-sm">
+                            <div class="flex items-center justify-center space-x-4">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-star text-yellow-300 mr-1"></i> <span>Mỗi câu đúng = 1
+                                        sao</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock mr-1"></i> <span>Có tính giờ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Area -->
+                <div id="mul-quiz-area" class="hidden">
+                    <!-- Timer and Progress -->
+                    <div class="bubble bg-white p-6 mb-6">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div>
+                                <div class="font-black text-lg text-gray-700">Tiến độ làm bài</div>
+                                <div class="flex items-center space-x-4 mt-2">
+                                    <div class="progress-bar w-48 md:w-64">
+                                        <div id="mul-progress"
+                                            class="progress-fill bg-gradient-to-r from-primary-orange to-orange-500"
+                                            style="width: 0%"></div>
+                                    </div>
+                                    <span id="mul-progress-text" class="font-black text-xl">0/10</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="text-sm text-gray-600">Thời gian</div>
+                                    <div id="mul-timer" class="timer">00:00</div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <div class="text-sm text-gray-600">Sao</div>
+                                    <div id="mul-stars" class="star-rating">☆☆☆☆☆</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questions -->
+                    <div id="mul-questions-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"></div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-center mt-8">
+                        <button id="mul-btn-submit" onclick="Mul.submitAnswers()"
+                            class="fun-btn bg-gradient-to-r from-green-500 to-green-600 text-white text-xl font-black py-5 px-12 rounded-2xl shadow-lg transform hover:-translate-y-1">
+                            <i class="fa-solid fa-paper-plane mr-3"></i> NỘP BÀI NGAY
+                        </button>
+                    </div>
+
+                    <!-- Result -->
+                    <div id="mul-result" class="hidden mt-8">
+                        <div
+                            class="bubble bg-gradient-to-br from-yellow-50 to-white p-8 text-center border-4 border-yellow-200 relative">
+                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                                <div class="completion-badge px-6 py-2">
+                                    <i class="fa-solid fa-trophy mr-2"></i> KẾT QUẢ
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <div class="text-6xl font-black text-gray-800 mb-2" id="mul-score-text">0/10</div>
+                                <div class="text-xl font-bold text-gray-600 mb-2" id="mul-score-msg"></div>
+                                <div class="flex justify-center my-4">
+                                    <div id="mul-final-stars" class="star-rating text-3xl">☆☆☆☆☆</div>
+                                </div>
+                                <div class="text-gray-600 mb-4">
+                                    <div id="mul-time-taken" class="mb-1"></div>
+                                    <div id="mul-accuracy"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <button onclick="Mul.resetQuiz()"
+                                    class="fun-btn bg-gradient-to-r from-primary-orange to-orange-500 text-white px-6 py-3 rounded-xl">
+                                    <i class="fa-solid fa-rotate-right mr-2"></i> Làm đề mới
+                                </button>
+                                <button onclick="Mul.reviewWrongAnswers()" id="mul-review-btn"
+                                    class="fun-btn bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hidden">
+                                    <i class="fa-solid fa-book-open mr-2"></i> Xem lại câu sai
+                                </button>
+                                <button onclick="Mul.toggleHistory()"
+                                    class="fun-btn bg-gradient-to-r from-gray-500 to-gray-600 text-white px-6 py-3 rounded-xl">
+                                    <i class="fa-solid fa-history mr-2"></i> Xem lịch sử
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History View -->
+            <div id="mul-view-history" class="hidden">
+                <div class="bubble bg-white p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-black text-primary-orange flex items-center">
+                            <i class="fa-solid fa-history mr-3"></i> Lịch sử phép nhân
+                        </h3>
+                        <div class="flex space-x-3">
+                            <button onclick="Mul.toggleHistory()"
+                                class="fun-btn bg-gradient-to-r from-primary-orange to-orange-500 text-white px-5 py-2 rounded-xl">
+                                <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại
+                            </button>
+                            <button onclick="Mul.clearHistory()"
+                                class="fun-btn bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2 rounded-xl">
+                                <i class="fa-solid fa-trash mr-2"></i> Xóa hết
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gradient-to-r from-primary-orange to-orange-500 text-white">
+                                <tr>
+                                    <th class="p-4 text-left rounded-l-xl">Ngày</th>
+                                    <th class="p-4 text-center">Số câu</th>
+                                    <th class="p-4 text-center">Đúng</th>
+                                    <th class="p-4 text-center">Sao</th>
+                                    <th class="p-4 text-center rounded-r-xl">Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mul-history-list" class="font-bold">
+                                <!-- History rows will be inserted here -->
+                            </tbody>
+                        </table>
+                        <div id="mul-history-empty" class="text-center py-10 text-gray-500 hidden">
+                            <i class="fa-solid fa-inbox text-5xl mb-4 opacity-30"></i>
+                            <div class="text-xl">Chưa có dữ liệu lịch sử</div>
+                            <p class="mt-2">Hãy làm bài để xem lịch sử tại đây!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE: PHÉP CHIA -->
+        <div id="module-div" class="module-section">
+            <!-- Practice View -->
+            <div id="div-view-practice" class="space-y-8">
+                <!-- Welcome Card -->
+                <div class="bubble bg-white p-6 relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 text-8xl text-primary-green opacity-10">➗</div>
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div>
+                            <h2 class="text-3xl font-black text-primary-green mb-2">Phép Chia Thú Vị</h2>
+                            <p class="text-gray-600 max-w-xl">Luyện tập phép chia thật dễ! Chọn số chia và bắt đầu làm
+                                bài ngay nhé!</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                            <button onclick="Div.toggleHistory()"
+                                class="fun-btn bg-gradient-to-r from-green-100 to-green-200 text-green-800 px-5 py-3 border-2 border-green-300">
+                                <i class="fa-solid fa-history mr-2"></i> Lịch sử
+                            </button>
+                            <button onclick="Div.showInstructions()"
+                                class="fun-btn bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-5 py-3 border-2 border-blue-300">
+                                <i class="fa-solid fa-info-circle mr-2"></i> Hướng dẫn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration Card -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Chọn số chia -->
+                    <div class="bubble bg-white p-6">
+                        <h3 class="text-xl font-black text-primary-green mb-4 flex items-center">
+                            <i class="fa-solid fa-divide mr-2"></i> Chia Cho Số
+                        </h3>
+                        <div class="grid grid-cols-3 gap-3" id="div-options">
+                            <!-- Options will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Cấu hình -->
+                    <div class="bubble bg-white p-6">
+                        <h3 class="text-xl font-black text-primary-green mb-4 flex items-center">
+                            <i class="fa-solid fa-sliders mr-2"></i> Điều Chỉnh
+                        </h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block font-bold mb-2 text-gray-700">Số lượng câu:</label>
+                                <div class="flex items-center">
+                                    <input type="range" id="div-numQuestions" min="5" max="30" value="10"
+                                        class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-green">
+                                    <span id="div-numDisplay"
+                                        class="ml-4 font-black text-primary-green text-xl w-16 text-center">10</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-4">
+                                <label class="block font-bold mb-2 text-gray-700">Chế độ:</label>
+                                <div class="space-y-3">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="div-timed" class="mr-3 h-5 w-5 accent-primary-green"
+                                            checked>
+                                        <span>Tính thời gian làm bài</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="div-remainder"
+                                            class="mr-3 h-5 w-5 accent-primary-green">
+                                        <span>Bao gồm phép chia có dư</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Start Card -->
+                    <div
+                        class="bubble bg-gradient-to-br from-primary-green to-green-500 p-6 flex flex-col justify-center items-center text-center">
+                        <div class="text-white mb-6">
+                            <div class="text-5xl mb-2">🏆</div>
+                            <h3 class="text-2xl font-black mb-2">Sẵn sàng chưa?</h3>
+                            <p class="opacity-90">Nhấn nút bên dưới để bắt đầu làm bài nhé!</p>
+                        </div>
+
+                        <button onclick="Div.generateQuiz()"
+                            class="fun-btn bg-white text-primary-green text-2xl font-black py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fa-solid fa-play mr-3"></i> BẮT ĐẦU
+                        </button>
+
+                        <div class="mt-6 text-white text-sm">
+                            <div class="flex items-center justify-center space-x-4">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-star text-yellow-300 mr-1"></i> <span>Mỗi câu đúng = 1
+                                        sao</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock mr-1"></i> <span>Có tính giờ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Area -->
+                <div id="div-quiz-area" class="hidden">
+                    <!-- Timer and Progress -->
+                    <div class="bubble bg-white p-6 mb-6">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div>
+                                <div class="font-black text-lg text-gray-700">Tiến độ làm bài</div>
+                                <div class="flex items-center space-x-4 mt-2">
+                                    <div class="progress-bar w-48 md:w-64">
+                                        <div id="div-progress"
+                                            class="progress-fill bg-gradient-to-r from-primary-green to-green-500"
+                                            style="width: 0%"></div>
+                                    </div>
+                                    <span id="div-progress-text" class="font-black text-xl">0/10</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="text-sm text-gray-600">Thời gian</div>
+                                    <div id="div-timer" class="timer">00:00</div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <div class="text-sm text-gray-600">Sao</div>
+                                    <div id="div-stars" class="star-rating">☆☆☆☆☆</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questions -->
+                    <div id="div-questions-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"></div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-center mt-8">
+                        <button id="div-btn-submit" onclick="Div.submitAnswers()"
+                            class="fun-btn bg-gradient-to-r from-green-500 to-green-600 text-white text-xl font-black py-5 px-12 rounded-2xl shadow-lg transform hover:-translate-y-1">
+                            <i class="fa-solid fa-paper-plane mr-3"></i> NỘP BÀI NGAY
+                        </button>
+                    </div>
+
+                    <!-- Result -->
+                    <div id="div-result" class="hidden mt-8">
+                        <div
+                            class="bubble bg-gradient-to-br from-yellow-50 to-white p-8 text-center border-4 border-yellow-200 relative">
+                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                                <div class="completion-badge px-6 py-2">
+                                    <i class="fa-solid fa-trophy mr-2"></i> KẾT QUẢ
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <div class="text-6xl font-black text-gray-800 mb-2" id="div-score-text">0/10</div>
+                                <div class="text-xl font-bold text-gray-600 mb-2" id="div-score-msg"></div>
+                                <div class="flex justify-center my-4">
+                                    <div id="div-final-stars" class="star-rating text-3xl">☆☆☆☆☆</div>
+                                </div>
+                                <div class="text-gray-600 mb-4">
+                                    <div id="div-time-taken" class="mb-1"></div>
+                                    <div id="div-accuracy"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <button onclick="Div.resetQuiz()"
+                                    class="fun-btn bg-gradient-to-r from-primary-green to-green-500 text-white px-6 py-3 rounded-xl">
+                                    <i class="fa-solid fa-rotate-right mr-2"></i> Làm đề mới
+                                </button>
+                                <button onclick="Div.reviewWrongAnswers()" id="div-review-btn"
+                                    class="fun-btn bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hidden">
+                                    <i class="fa-solid fa-book-open mr-2"></i> Xem lại câu sai
+                                </button>
+                                <button onclick="Div.toggleHistory()"
+                                    class="fun-btn bg-gradient-to-r from-gray-500 to-gray-600 text-white px-6 py-3 rounded-xl">
+                                    <i class="fa-solid fa-history mr-2"></i> Xem lịch sử
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History View -->
+            <div id="div-view-history" class="hidden">
+                <div class="bubble bg-white p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-black text-primary-green flex items-center">
+                            <i class="fa-solid fa-history mr-3"></i> Lịch sử phép chia
+                        </h3>
+                        <div class="flex space-x-3">
+                            <button onclick="Div.toggleHistory()"
+                                class="fun-btn bg-gradient-to-r from-primary-green to-green-500 text-white px-5 py-2 rounded-xl">
+                                <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại
+                            </button>
+                            <button onclick="Div.clearHistory()"
+                                class="fun-btn bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2 rounded-xl">
+                                <i class="fa-solid fa-trash mr-2"></i> Xóa hết
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gradient-to-r from-primary-green to-green-500 text-white">
+                                <tr>
+                                    <th class="p-4 text-left rounded-l-xl">Ngày</th>
+                                    <th class="p-4 text-center">Số câu</th>
+                                    <th class="p-4 text-center">Đúng</th>
+                                    <th class="p-4 text-center">Sao</th>
+                                    <th class="p-4 text-center rounded-r-xl">Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody id="div-history-list" class="font-bold">
+                                <!-- History rows will be inserted here -->
+                            </tbody>
+                        </table>
+                        <div id="div-history-empty" class="text-center py-10 text-gray-500 hidden">
+                            <i class="fa-solid fa-inbox text-5xl mb-4 opacity-30"></i>
+                            <div class="text-xl">Chưa có dữ liệu lịch sử</div>
+                            <p class="mt-2">Hãy làm bài để xem lịch sử tại đây!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-6 text-gray-600 font-medium bg-white border-t mt-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div
+                        class="font-black text-xl bg-gradient-to-r from-primary-pink to-primary-orange bg-clip-text text-transparent">
+                        Toán Vui Cho Bé</div>
+                    <p class="text-sm">Học toán thật vui, thật dễ dàng!</p>
+                </div>
+                <div class="flex space-x-6 text-2xl">
+                    <a href="#" class="text-primary-pink hover:text-dark-pink"><i class="fa-solid fa-heart"></i></a>
+                    <a href="#" class="text-primary-orange hover:text-dark-orange"><i class="fa-solid fa-star"></i></a>
+                    <a href="#" class="text-primary-green hover:text-dark-green"><i
+                            class="fa-solid fa-graduation-cap"></i></a>
+                    <a href="#" class="text-primary-blue hover:text-dark-blue"><i class="fa-solid fa-share-alt"></i></a>
+                </div>
+            </div>
+            <div class="mt-6 text-sm opacity-70">© 2024 Toán Vui Cho Bé - Tổng Hợp 3 trong 1. Dành cho trẻ em từ 5-10
+                tuổi.</div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-primary-pink to-primary-orange p-6 text-center relative">
+                <button onclick="Auth.closeModal()"
+                    class="absolute top-4 right-4 text-white hover:text-gray-200 text-xl">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+                <div
+                    class="w-16 h-16 bg-white rounded-full mx-auto flex items-center justify-center mb-3 shadow-lg text-3xl">
+                    🦊
+                </div>
+                <h2 id="auth-modal-title" class="text-2xl font-black text-white">Đăng Nhập</h2>
+            </div>
+
+            <!-- Body -->
+            <div class="p-8">
+                <!-- Login Form -->
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Email</label>
+                        <input type="email" id="login-email" required
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-pink focus:outline-none transition-colors font-bold"
+                            placeholder="nhap@email.com">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Mật khẩu</label>
+                        <input type="password" id="login-password" required
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-pink focus:outline-none transition-colors font-bold"
+                            placeholder="******">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-primary-pink to-primary-orange text-white font-black py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                        ĐĂNG NHẬP
+                    </button>
+                    <div class="text-center mt-4">
+                        <span class="text-gray-500">Chưa có tài khoản?</span>
+                        <a href="#" onclick="Auth.switchMode('register')"
+                            class="text-primary-pink font-bold hover:underline">Đăng ký ngay</a>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Tên của bé</label>
+                        <input type="text" id="reg-name" required
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-orange focus:outline-none transition-colors font-bold"
+                            placeholder="Ví dụ: Bé Bi">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Email</label>
+                        <input type="email" id="reg-email" required
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-orange focus:outline-none transition-colors font-bold"
+                            placeholder="nhap@email.com">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Mật khẩu</label>
+                        <input type="password" id="reg-password" required
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-orange focus:outline-none transition-colors font-bold"
+                            placeholder="******">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-primary-orange to-red-500 text-white font-black py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                        ĐĂNG KÝ
+                    </button>
+                    <div class="text-center mt-4">
+                        <span class="text-gray-500">Đã có tài khoản?</span>
+                        <a href="#" onclick="Auth.switchMode('login')"
+                            class="text-primary-orange font-bold hover:underline">Đăng nhập</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Module Logic -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // === UTILITY FUNCTIONS ===
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function rand(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function fireConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function playSound(soundId) {
+            try {
+                // Create audio context for sound effects
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                let source;
+
+                // Simple beep sounds
+                if (soundId === 'correct-sound') {
+                    // Happy beep for correct answer
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                } else if (soundId === 'wrong-sound') {
+                    // Sad beep for wrong answer
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.value = 400;
+                    oscillator.type = 'sine';
+
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                } else if (soundId === 'win-sound') {
+                    // Victory sound
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+                    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+
+                    oscillator.type = 'sine';
+
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.8);
+                }
+            } catch (e) {
+                console.log("Cannot play sound:", e);
+            }
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        async function saveHistory(key, correct, total, timeTaken) {
+            // Mapping key to type
+            let type = 'addsub';
+            if (key.includes('multiplication')) type = 'mul';
+            if (key.includes('division')) type = 'div';
+
+            const score = parseFloat((correct / total * 10).toFixed(1));
+            const stars = Math.round(correct / total * 5);
+
+            // Check if user is logged in
+            if (API.isLoggedIn()) {
+                const result = await API.submitQuiz({
+                    type: type,
+                    score: score,
+                    total: total,
+                    correct: correct,
+                    stars: stars,
+                    time: timeTaken
+                });
+
+                if (result.success) {
+                    console.log('Result saved to cloud');
+                } else {
+                    console.error('Failed to save result:', result.error);
+                }
+            } else {
+                // Fallback to local storage for guests (if allowed) or prompt login
+                const history = JSON.parse(localStorage.getItem(key) || '[]');
+                history.unshift({
+                    date: new Date().toISOString(),
+                    correct: correct,
+                    total: total,
+                    score: score,
+                    stars: stars,
+                    time: timeTaken
+                });
+
+                if (history.length > 30) history.pop();
+                localStorage.setItem(key, JSON.stringify(history));
+            }
+        }
+
+        async function renderHistoryTable(key, tableId, emptyId) {
+            const tbody = document.getElementById(tableId);
+            const emptyDiv = document.getElementById(emptyId);
+
+            let history = [];
+
+            if (API.isLoggedIn()) {
+                // Load from API
+                // Note: The backend returns all history, we need to filter by type
+                // Or better, the backend should support filtering. 
+                // For now, let's just get all history and filter client side or assume separate calls?
+                // The current backend endpoint returns all. Let's fix this later if needed.
+                // Actually, the key logic above maps to: addsub, mul, div.
+                let type = 'addsub';
+                if (key.includes('multiplication')) type = 'mul';
+                if (key.includes('division')) type = 'div';
+
+                const res = await API.getHistory();
+                if (res.success) {
+                    history = res.data.filter(h => h.type === type);
+                }
+            } else {
+                // Load from local storage
+                history = JSON.parse(localStorage.getItem(key) || '[]');
+            }
+
+            if (history.length === 0) {
+                if (tbody) tbody.innerHTML = '';
+                if (emptyDiv) emptyDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (emptyDiv) emptyDiv.classList.add('hidden');
+
+            if (tbody) {
+                tbody.innerHTML = history.map((h, index) => {
+                    const dateObj = new Date(h.date || h.created_at); // Handle both formats
+                    const date = dateObj.toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    const score = parseFloat(h.score);
+                    let colorClass = 'text-green-600';
+                    if (score < 5) colorClass = 'text-red-600';
+                    else if (score < 8) colorClass = 'text-yellow-600';
+
+                    // Create stars display
+                    let starsHtml = '';
+                    for (let i = 0; i < 5; i++) {
+                        if (i < (h.stars || h.stars_earned)) {
+                            starsHtml += '<i class="fa-solid fa-star text-yellow-500"></i>';
+                        } else {
+                            starsHtml += '<i class="fa-regular fa-star text-gray-300"></i>';
+                        }
+                    }
+
+                    const correctCount = h.correct || h.correct_answers || 0;
+                    const totalCount = h.total || h.total_questions || 0;
+
+                    return `
+                    <tr class="history-row border-b hover:bg-gray-50">
+                        <td class="p-4">${date}</td>
+                        <td class="p-4 text-center font-black">${totalCount}</td>
+                        <td class="p-4 text-center font-black ${score >= 8 ? 'text-green-600' : score >= 5 ? 'text-yellow-600' : 'text-red-600'}">${correctCount}</td>
+                        <td class="p-4 text-center">${starsHtml}</td>
+                        <td class="p-4 text-center font-black ${colorClass}">${score}</td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+
+        function switchModule(moduleName) {
+            // Hide all modules
+            document.querySelectorAll('.module-section').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Update tabs
+            document.querySelectorAll('.nav-tab').forEach(el => {
+                el.classList.remove('active');
+                el.classList.add('opacity-80');
+            });
+
+            // Show selected module
+            const module = document.getElementById('module-' + moduleName);
+            if (module) {
+                module.classList.add('active');
+            }
+
+            // Update active tab
+            const tabBtn = document.getElementById('tab-' + moduleName);
+            if (tabBtn) {
+                tabBtn.classList.remove('opacity-80');
+                tabBtn.classList.add('active');
+            }
+
+            // Update background color based on module
+            const body = document.getElementById('main-body');
+            if (moduleName === 'addsub') {
+                body.className = "text-gray-800 min-h-screen flex flex-col font-sans bg-gradient-to-br from-light-pink to-white";
+            } else if (moduleName === 'mul') {
+                body.className = "text-gray-800 min-h-screen flex flex-col font-sans bg-gradient-to-br from-light-orange to-white";
+            } else {
+                body.className = "text-gray-800 min-h-screen flex flex-col font-sans bg-gradient-to-br from-light-green to-white";
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // === ADDSUB MODULE ===
+        const AddSub = {
+            questions: [],
+            userAnswers: [],
+            startTime: null,
+            timerInterval: null,
+            timeTaken: 0,
+            key: 'math_quiz_addsub_history',
+
+            init: function () {
+                // Initialize sliders
+                const maxSumSlider = document.getElementById('addsub-maxSum-slider');
+                const maxSumValue = document.getElementById('addsub-maxSum-value');
+                const maxSubSlider = document.getElementById('addsub-maxSub-slider');
+                const maxSubValue = document.getElementById('addsub-maxSub-value');
+
+                if (maxSumSlider && maxSumValue) {
+                    maxSumSlider.addEventListener('input', function () {
+                        maxSumValue.textContent = this.value;
+                    });
+                }
+
+                if (maxSubSlider && maxSubValue) {
+                    maxSubSlider.addEventListener('input', function () {
+                        maxSubValue.textContent = this.value;
+                    });
+                }
+
+                // Update card styles
+                this.updateCardStyle();
+            },
+
+            changeOperands: function (delta) {
+                const input = document.getElementById('addsub-numOperands');
+                let value = parseInt(input.value) + delta;
+                if (value < 2) value = 2;
+                if (value > 5) value = 5;
+                input.value = value;
+            },
+
+            changeQuestions: function (delta) {
+                const input = document.getElementById('addsub-numQuestions');
+                let value = parseInt(input.value) + delta;
+                if (value < 5) value = 5;
+                if (value > 30) value = 30;
+                input.value = value;
+            },
+
+            updateCardStyle: function () {
+                const cards = ['add', 'sub', 'carry'];
+                cards.forEach(k => {
+                    const checkbox = document.getElementById('addsub-check' + (k.charAt(0).toUpperCase() + k.slice(1)));
+                    const card = document.getElementById('card-' + k);
+                    if (checkbox && card) {
+                        if (checkbox.checked) {
+                            card.classList.add('selected');
+                        } else {
+                            card.classList.remove('selected');
+                        }
+                    }
+                });
+            },
+
+            showInstructions: function () {
+                alert(`HƯỚNG DẪN LUYỆN TẬP CỘNG TRỪ:\n\n1. Chọn phép tính muốn luyện tập: Cộng, Trừ, hoặc cả hai\n2. Điều chỉnh độ khó bằng thanh trượt\n3. Chọn số câu hỏi muốn làm\n4. Nhấn "BẮT ĐẦU LUYỆN TẬP" để bắt đầu\n5. Nhập đáp án vào ô trống và nhấn Enter để chuyển câu tiếp theo\n6. Nhấn "NỘP BÀI" khi hoàn thành\n\nMỗi câu đúng sẽ được 1 sao vàng! Chúc bé học vui!`);
+            },
+
+            generateQuiz: function () {
+                const maxSum = parseInt(document.getElementById('addsub-maxSum-slider').value) || 20;
+                const maxSub = parseInt(document.getElementById('addsub-maxSub-slider').value) || 20;
+                const doAdd = document.getElementById('addsub-checkAdd').checked;
+                const doSub = document.getElementById('addsub-checkSub').checked;
+                const allowCarry = document.getElementById('addsub-checkCarry').checked;
+                const numOperands = parseInt(document.getElementById('addsub-numOperands').value) || 2;
+                const numQuestions = parseInt(document.getElementById('addsub-numQuestions').value) || 10;
+
+                if (!doAdd && !doSub) {
+                    alert("Vui lòng chọn ít nhất một phép tính (Cộng hoặc Trừ)!");
+                    return;
+                }
+
+                this.questions = [];
+                for (let i = 0; i < numQuestions; i++) {
+                    let type;
+                    if (doAdd && doSub) {
+                        type = Math.random() < 0.5 ? 'ADD' : 'SUB';
+                    } else if (doAdd) {
+                        type = 'ADD';
+                    } else {
+                        type = 'SUB';
+                    }
+
+                    if (type === 'ADD') {
+                        this.questions.push(this.makeAdd(maxSum, numOperands, allowCarry));
+                    } else {
+                        this.questions.push(this.makeSub(maxSub, numOperands, allowCarry));
+                    }
+                }
+
+                this.renderQuiz();
+            },
+
+            makeAdd: function (maxSum, n, allowCarry) {
+                if (allowCarry) {
+                    // Create addition with possible carrying
+                    let sum = rand(n, maxSum);
+                    let numbers = [];
+                    let remaining = sum;
+
+                    for (let i = 0; i < n - 1; i++) {
+                        let max = Math.min(remaining, Math.floor(maxSum / 2));
+                        let num = rand(0, max);
+                        numbers.push(num);
+                        remaining -= num;
+                    }
+
+                    numbers.push(remaining);
+                    shuffleArray(numbers);
+
+                    return {
+                        text: numbers.join(' + '),
+                        result: sum,
+                        type: 'ADD',
+                        numbers: numbers
+                    };
+                } else {
+                    // Simple addition without carrying
+                    let numbers = [];
+                    for (let i = 0; i < n; i++) {
+                        numbers.push(rand(0, Math.floor(maxSum / n)));
+                    }
+
+                    let sum = numbers.reduce((a, b) => a + b, 0);
+
+                    // Ensure sum doesn't exceed maxSum
+                    if (sum > maxSum) {
+                        let diff = sum - maxSum;
+                        numbers[0] -= diff;
+                        if (numbers[0] < 0) numbers[0] = 0;
+                        sum = numbers.reduce((a, b) => a + b, 0);
+                    }
+
+                    return {
+                        text: numbers.join(' + '),
+                        result: sum,
+                        type: 'ADD',
+                        numbers: numbers
+                    };
+                }
+            },
+
+            makeSub: function (maxSub, n, allowBorrow) {
+                if (allowBorrow) {
+                    // Subtraction with possible borrowing
+                    let minuend = rand(n, maxSub);
+                    let subtrahends = [];
+                    let remaining = minuend;
+
+                    for (let i = 0; i < n - 1; i++) {
+                        let max = Math.min(remaining, Math.floor(maxSub / 2));
+                        let num = rand(0, max);
+                        subtrahends.push(num);
+                        remaining -= num;
+                    }
+
+                    return {
+                        text: `${minuend} - ${subtrahends.join(' - ')}`,
+                        result: remaining,
+                        type: 'SUB',
+                        numbers: [minuend, ...subtrahends]
+                    };
+                } else {
+                    // Simple subtraction without borrowing
+                    let minuend = rand(n, maxSub);
+                    let subtrahends = [];
+                    let remaining = minuend;
+
+                    for (let i = 0; i < n - 1; i++) {
+                        let max = Math.min(remaining, Math.floor(minuend / (n - i)));
+                        let num = rand(0, max);
+                        subtrahends.push(num);
+                        remaining -= num;
+                    }
+
+                    return {
+                        text: `${minuend} - ${subtrahends.join(' - ')}`,
+                        result: remaining,
+                        type: 'SUB',
+                        numbers: [minuend, ...subtrahends]
+                    };
+                }
+            },
+
+            renderQuiz: function () {
+                const list = document.getElementById('addsub-questions-list');
+                if (!list) return;
+
+                list.innerHTML = '';
+                this.userAnswers = new Array(this.questions.length).fill(null);
+
+                this.questions.forEach((q, idx) => {
+                    // Format the question with colored operators
+                    let formattedText = q.text;
+                    if (q.type === 'ADD') {
+                        formattedText = formattedText.replace(/\+/g, '<span class="text-primary-pink font-black mx-1">+</span>');
+                    } else {
+                        formattedText = formattedText.replace(/-/g, '<span class="text-primary-blue font-black mx-1">-</span>');
+                    }
+
+                    const html = `
+                    <div class="question-item bubble bg-white p-5" id="addsub-q${idx}">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center w-full">
+                                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gradient-to-r from-primary-pink to-pink-500 text-white rounded-full text-lg font-black mr-4">
+                                    ${idx + 1}
+                                </div>
+                                <div class="text-2xl sm:text-3xl font-black">
+                                    ${formattedText} = 
+                                </div>
+                            </div>
+                            <div class="relative w-full sm:w-40">
+                                <input type="number" 
+                                       data-idx="${idx}" 
+                                       class="addsub-input number-input w-full h-14 focus:outline-none"
+                                       placeholder="?"
+                                       onkeyup="AddSub.handleInputKeyup(event, ${idx})"
+                                       oninput="AddSub.handleInputChange(${idx})">
+                                <div id="addsub-icon-${idx}" class="mt-2 hidden"></div>
+                            </div>
+                        </div>
+                    </div>`;
+
+                    list.innerHTML += html;
+                });
+
+                // Show quiz area
+                document.getElementById('addsub-quiz-area').classList.remove('hidden');
+                document.getElementById('addsub-result').classList.add('hidden');
+
+                // Reset progress
+                document.getElementById('addsub-progress').style.width = '0%';
+                document.getElementById('addsub-progress-text').textContent = `0/${this.questions.length}`;
+
+                // Reset stars
+                document.getElementById('addsub-stars').innerHTML = '☆☆☆☆☆';
+
+                // Start timer
+                this.startTimer();
+
+                // Focus on first input
+                setTimeout(() => {
+                    const firstInput = document.querySelector('.addsub-input');
+                    if (firstInput) firstInput.focus();
+                }, 100);
+
+                // Scroll to questions
+                document.getElementById('addsub-questions-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            },
+
+            startTimer: function () {
+                this.startTime = new Date();
+                this.timeTaken = 0;
+
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                this.timerInterval = setInterval(() => {
+                    this.timeTaken++;
+                    const timerElement = document.getElementById('addsub-timer');
+                    if (timerElement) {
+                        timerElement.textContent = formatTime(this.timeTaken);
+                    }
+                }, 1000);
+            },
+
+            handleInputKeyup: function (event, idx) {
+                if (event.key === 'Enter') {
+                    // Move to next input or submit if last
+                    const inputs = document.querySelectorAll('.addsub-input');
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else {
+                        // Last input, focus on submit button
+                        document.getElementById('addsub-btn-submit').focus();
+                    }
+                }
+
+                // Update progress
+                this.updateProgress();
+            },
+
+            handleInputChange: function (idx) {
+                const input = document.querySelector(`.addsub-input[data-idx="${idx}"]`);
+                if (input && input.value !== '') {
+                    this.userAnswers[idx] = parseInt(input.value);
+                } else {
+                    this.userAnswers[idx] = null;
+                }
+
+                // Update progress
+                this.updateProgress();
+            },
+
+            updateProgress: function () {
+                const answered = this.userAnswers.filter(a => a !== null).length;
+                const total = this.questions.length;
+                const percentage = (answered / total) * 100;
+
+                const progressBar = document.getElementById('addsub-progress');
+                const progressText = document.getElementById('addsub-progress-text');
+
+                if (progressBar) {
+                    progressBar.style.width = `${percentage}%`;
+                }
+
+                if (progressText) {
+                    progressText.textContent = `${answered}/${total}`;
+                }
+
+                // Update stars based on correct answers so far (if we were to submit now)
+                let correct = 0;
+                for (let i = 0; i < this.questions.length; i++) {
+                    if (this.userAnswers[i] === this.questions[i].result) {
+                        correct++;
+                    }
+                }
+
+                this.updateStars(correct, total, 'addsub-stars');
+            },
+
+            updateStars: function (correct, total, elementId) {
+                const starsElement = document.getElementById(elementId);
+                if (!starsElement) return;
+
+                const starCount = Math.round((correct / total) * 5);
+                let starsHtml = '';
+
+                for (let i = 0; i < 5; i++) {
+                    if (i < starCount) {
+                        starsHtml += '<i class="fa-solid fa-star"></i>';
+                    } else {
+                        starsHtml += '<i class="fa-regular fa-star"></i>';
+                    }
+                }
+
+                starsElement.innerHTML = starsHtml;
+            },
+
+            submitAnswers: function () {
+                // Stop timer
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                let correct = 0;
+                let hasWrong = false;
+
+                // Check each answer
+                this.questions.forEach((q, idx) => {
+                    const input = document.querySelector(`.addsub-input[data-idx="${idx}"]`);
+                    const questionElement = document.getElementById(`addsub-q${idx}`);
+                    const iconElement = document.getElementById(`addsub-icon-${idx}`);
+
+                    if (!input || !questionElement) return;
+
+                    const userAnswer = this.userAnswers[idx];
+                    const isCorrect = userAnswer === q.result;
+
+                    // Disable input
+                    input.disabled = true;
+
+                    // Show result
+                    if (iconElement) {
+                        iconElement.classList.remove('hidden');
+
+                        if (isCorrect) {
+                            correct++;
+                            playSound('correct-sound');
+                            questionElement.classList.add('correct');
+                            iconElement.innerHTML = `
+                                <div class="bg-green-100 text-green-800 p-2 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-check-circle text-xl mr-2"></i>
+                                    <span class="font-bold">Đúng!</span>
+                                </div>`;
+                        } else {
+                            hasWrong = true;
+                            playSound('wrong-sound');
+                            questionElement.classList.add('wrong');
+                            iconElement.innerHTML = `
+                                <div class="bg-red-100 text-red-800 p-2 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-times-circle text-xl mr-2"></i>
+                                    <span class="font-bold">Sai! Đáp án: ${q.result}</span>
+                                </div>`;
+                        }
+                    }
+                });
+
+                // Show result section
+                const resultSection = document.getElementById('addsub-result');
+                const scoreText = document.getElementById('addsub-score-text');
+                const scoreMsg = document.getElementById('addsub-score-msg');
+                const finalStars = document.getElementById('addsub-final-stars');
+                const timeTakenElement = document.getElementById('addsub-time-taken');
+                const accuracyElement = document.getElementById('addsub-accuracy');
+                const reviewButton = document.getElementById('addsub-review-btn');
+
+                if (resultSection) {
+                    resultSection.classList.remove('hidden');
+                    resultSection.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                // Update score
+                if (scoreText) {
+                    scoreText.textContent = `${correct}/${this.questions.length}`;
+                }
+
+                // Update message
+                if (scoreMsg) {
+                    const percentage = (correct / this.questions.length) * 100;
+                    if (percentage === 100) {
+                        scoreMsg.textContent = "Xuất sắc! Bé giỏi quá! 🏆";
+                        playSound('win-sound');
+                        fireConfetti();
+                    } else if (percentage >= 80) {
+                        scoreMsg.textContent = "Rất tốt! Tiếp tục phát huy nhé! 💪";
+                    } else if (percentage >= 60) {
+                        scoreMsg.textContent = "Khá lắm! Cố gắng hơn chút nữa nhé! 👍";
+                    } else {
+                        scoreMsg.textContent = "Cố gắng lần sau làm tốt hơn nhé! ❤️";
+                    }
+                }
+
+                // Update stars
+                this.updateStars(correct, this.questions.length, 'addsub-final-stars');
+
+                // Update time and accuracy
+                if (timeTakenElement) {
+                    timeTakenElement.textContent = `Thời gian: ${formatTime(this.timeTaken)}`;
+                }
+
+                if (accuracyElement) {
+                    const accuracy = ((correct / this.questions.length) * 100).toFixed(0);
+                    accuracyElement.textContent = `Độ chính xác: ${accuracy}%`;
+                }
+
+                // Show review button if there are wrong answers
+                if (reviewButton) {
+                    if (hasWrong) {
+                        reviewButton.classList.remove('hidden');
+                    } else {
+                        reviewButton.classList.add('hidden');
+                    }
+                }
+
+                // Hide submit button
+                document.getElementById('addsub-btn-submit').classList.add('hidden');
+
+                // Save to history
+                saveHistory(this.key, correct, this.questions.length, this.timeTaken);
+            },
+
+            resetQuiz: function () {
+                // Hide quiz area
+                document.getElementById('addsub-quiz-area').classList.add('hidden');
+                document.getElementById('addsub-result').classList.add('hidden');
+
+                // Reset timer
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            reviewWrongAnswers: function () {
+                alert("Chức năng xem lại câu sai đang được phát triển. Ở phiên bản tương lai, bé sẽ có thể xem lại và làm lại các câu đã sai!");
+            },
+
+            toggleHistory: function () {
+                const practiceView = document.getElementById('addsub-view-practice');
+                const historyView = document.getElementById('addsub-view-history');
+
+                if (historyView.classList.contains('hidden')) {
+                    // Switch to history view
+                    practiceView.classList.add('hidden');
+                    historyView.classList.remove('hidden');
+
+                    // Load history
+                    renderHistoryTable(this.key, 'addsub-history-list', 'addsub-history-empty');
+                } else {
+                    // Switch back to practice view
+                    historyView.classList.add('hidden');
+                    practiceView.classList.remove('hidden');
+                }
+            },
+
+            clearHistory: function () {
+                if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử luyện tập không?")) {
+                    localStorage.removeItem(this.key);
+                    renderHistoryTable(this.key, 'addsub-history-list', 'addsub-history-empty');
+                }
+            }
+        };
+
+        // === MUL MODULE (PHÉP NHÂN) ===
+        const Mul = {
+            questions: [],
+            userAnswers: [],
+            startTime: null,
+            timerInterval: null,
+            timeTaken: 0,
+            key: 'math_quiz_multiplication_history',
+
+            init: function () {
+                // Initialize multiplication table options
+                const optionsContainer = document.getElementById('mul-options');
+                if (optionsContainer) {
+                    let html = '';
+
+                    // Add "All" option
+                    html += `
+                    <label class="option-card flex flex-col items-center justify-center p-3 bg-gradient-to-br from-orange-50 to-white border-2 border-orange-200 rounded-xl">
+                        <input type="checkbox" id="mul-all" class="h-5 w-5 accent-primary-orange mb-2" onchange="Mul.toggleAll(this)">
+                        <div class="text-center">
+                            <div class="text-2xl mb-1">⭐</div>
+                            <div class="font-black">Tất cả</div>
+                        </div>
+                    </label>`;
+
+                    // Add tables 2-9
+                    for (let i = 2; i <= 9; i++) {
+                        html += `
+                        <label class="option-card flex flex-col items-center justify-center p-3 bg-gradient-to-br from-orange-50 to-white border-2 border-orange-200 rounded-xl">
+                            <input type="checkbox" value="${i}" class="mul-cb h-5 w-5 accent-primary-orange mb-2">
+                            <div class="text-center">
+                                <div class="text-2xl mb-1">${i}</div>
+                                <div class="font-black">Bảng ${i}</div>
+                            </div>
+                        </label>`;
+                    }
+
+                    optionsContainer.innerHTML = html;
+                }
+
+                // Initialize slider
+                const slider = document.getElementById('mul-numQuestions');
+                const display = document.getElementById('mul-numDisplay');
+
+                if (slider && display) {
+                    slider.addEventListener('input', function () {
+                        display.textContent = this.value;
+                    });
+                }
+
+                // Initialize "Select All" checkbox
+                const selectAllCheckbox = document.getElementById('mul-all');
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.checked = true;
+                    this.toggleAll(selectAllCheckbox);
+                }
+            },
+
+            toggleAll: function (source) {
+                const checkboxes = document.querySelectorAll('.mul-cb');
+                checkboxes.forEach(cb => {
+                    cb.checked = source.checked;
+                });
+            },
+
+            showInstructions: function () {
+                alert(`HƯỚNG DẪN LUYỆN TẬP PHÉP NHÂN:\n\n1. Chọn bảng cửu chương muốn luyện tập (hoặc chọn Tất cả)\n2. Điều chỉnh số câu hỏi bằng thanh trượt\n3. Chọn chế độ làm bài (có tính giờ hoặc trộn bảng)\n4. Nhấn "BẮT ĐẦU" để bắt đầu\n5. Nhập đáp án vào ô trống và nhấn Enter để chuyển câu tiếp theo\n6. Nhấn "NỘP BÀI" khi hoàn thành\n\nMỗi câu đúng sẽ được 1 sao vàng! Chúc bé học vui!`);
+            },
+
+            generateQuiz: function () {
+                const selectedTables = Array.from(document.querySelectorAll('.mul-cb:checked')).map(cb => parseInt(cb.value));
+                const numQuestions = parseInt(document.getElementById('mul-numQuestions').value) || 10;
+                const mixedMode = document.getElementById('mul-mixed')?.checked || false;
+
+                if (selectedTables.length === 0) {
+                    alert("Vui lòng chọn ít nhất một bảng cửu chương!");
+                    return;
+                }
+
+                this.questions = [];
+
+                // Generate questions
+                if (mixedMode) {
+                    // Mixed mode: random questions from selected tables
+                    for (let i = 0; i < numQuestions; i++) {
+                        const table = selectedTables[Math.floor(Math.random() * selectedTables.length)];
+                        const multiplier = rand(1, 10);
+                        this.questions.push({
+                            text: `${table} × ${multiplier}`,
+                            result: table * multiplier,
+                            table: table,
+                            multiplier: multiplier
+                        });
+                    }
+                } else {
+                    // Not mixed: try to distribute questions evenly among selected tables
+                    const questionsPerTable = Math.ceil(numQuestions / selectedTables.length);
+
+                    selectedTables.forEach(table => {
+                        // Create a list of multipliers 1-10
+                        let multipliers = [];
+                        for (let i = 1; i <= 10; i++) multipliers.push(i);
+
+                        // Shuffle and take needed amount
+                        shuffleArray(multipliers);
+                        const selectedMultipliers = multipliers.slice(0, Math.min(questionsPerTable, 10));
+
+                        selectedMultipliers.forEach(multiplier => {
+                            this.questions.push({
+                                text: `${table} × ${multiplier}`,
+                                result: table * multiplier,
+                                table: table,
+                                multiplier: multiplier
+                            });
+                        });
+                    });
+
+                    // Shuffle all questions and take the required number
+                    shuffleArray(this.questions);
+                    this.questions = this.questions.slice(0, numQuestions);
+                }
+
+                this.renderQuiz();
+            },
+
+            renderQuiz: function () {
+                const list = document.getElementById('mul-questions-list');
+                if (!list) return;
+
+                list.innerHTML = '';
+                this.userAnswers = new Array(this.questions.length).fill(null);
+
+                this.questions.forEach((q, idx) => {
+                    const html = `
+                    <div class="question-item bubble bg-white p-5" id="mul-q${idx}">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center w-full">
+                                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gradient-to-r from-primary-orange to-orange-500 text-white rounded-full text-lg font-black mr-4">
+                                    ${idx + 1}
+                                </div>
+                                <div class="text-2xl sm:text-3xl font-black">
+                                    ${q.text.replace('×', '<span class="text-primary-orange font-black mx-1">×</span>')} = 
+                                </div>
+                            </div>
+                            <div class="relative w-full sm:w-40">
+                                <input type="number" 
+                                       data-idx="${idx}" 
+                                       class="mul-input number-input w-full h-14 focus:outline-none"
+                                       placeholder="?"
+                                       onkeyup="Mul.handleInputKeyup(event, ${idx})"
+                                       oninput="Mul.handleInputChange(${idx})">
+                                <div id="mul-icon-${idx}" class="mt-2 hidden"></div>
+                            </div>
+                        </div>
+                    </div>`;
+
+                    list.innerHTML += html;
+                });
+
+                // Show quiz area
+                document.getElementById('mul-quiz-area').classList.remove('hidden');
+                document.getElementById('mul-result').classList.add('hidden');
+
+                // Reset progress
+                document.getElementById('mul-progress').style.width = '0%';
+                document.getElementById('mul-progress-text').textContent = `0/${this.questions.length}`;
+
+                // Reset stars
+                document.getElementById('mul-stars').innerHTML = '☆☆☆☆☆';
+
+                // Start timer if timed mode is enabled
+                const timedMode = document.getElementById('mul-timed')?.checked || true;
+                if (timedMode) {
+                    this.startTimer();
+                } else {
+                    document.getElementById('mul-timer').textContent = '--:--';
+                }
+
+                // Focus on first input
+                setTimeout(() => {
+                    const firstInput = document.querySelector('.mul-input');
+                    if (firstInput) firstInput.focus();
+                }, 100);
+
+                // Scroll to questions
+                document.getElementById('mul-questions-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            },
+
+            startTimer: function () {
+                this.startTime = new Date();
+                this.timeTaken = 0;
+
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                this.timerInterval = setInterval(() => {
+                    this.timeTaken++;
+                    const timerElement = document.getElementById('mul-timer');
+                    if (timerElement) {
+                        timerElement.textContent = formatTime(this.timeTaken);
+                    }
+                }, 1000);
+            },
+
+            handleInputKeyup: function (event, idx) {
+                if (event.key === 'Enter') {
+                    // Move to next input or submit if last
+                    const inputs = document.querySelectorAll('.mul-input');
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else {
+                        // Last input, focus on submit button
+                        document.getElementById('mul-btn-submit').focus();
+                    }
+                }
+
+                // Update progress
+                this.updateProgress();
+            },
+
+            handleInputChange: function (idx) {
+                const input = document.querySelector(`.mul-input[data-idx="${idx}"]`);
+                if (input && input.value !== '') {
+                    this.userAnswers[idx] = parseInt(input.value);
+                } else {
+                    this.userAnswers[idx] = null;
+                }
+
+                // Update progress
+                this.updateProgress();
+            },
+
+            updateProgress: function () {
+                const answered = this.userAnswers.filter(a => a !== null).length;
+                const total = this.questions.length;
+                const percentage = (answered / total) * 100;
+
+                const progressBar = document.getElementById('mul-progress');
+                const progressText = document.getElementById('mul-progress-text');
+
+                if (progressBar) {
+                    progressBar.style.width = `${percentage}%`;
+                }
+
+                if (progressText) {
+                    progressText.textContent = `${answered}/${total}`;
+                }
+
+                // Update stars based on correct answers so far (if we were to submit now)
+                let correct = 0;
+                for (let i = 0; i < this.questions.length; i++) {
+                    if (this.userAnswers[i] === this.questions[i].result) {
+                        correct++;
+                    }
+                }
+
+                this.updateStars(correct, total, 'mul-stars');
+            },
+
+            updateStars: function (correct, total, elementId) {
+                const starsElement = document.getElementById(elementId);
+                if (!starsElement) return;
+
+                const starCount = Math.round((correct / total) * 5);
+                let starsHtml = '';
+
+                for (let i = 0; i < 5; i++) {
+                    if (i < starCount) {
+                        starsHtml += '<i class="fa-solid fa-star"></i>';
+                    } else {
+                        starsHtml += '<i class="fa-regular fa-star"></i>';
+                    }
+                }
+
+                starsElement.innerHTML = starsHtml;
+            },
+
+            submitAnswers: function () {
+                // Stop timer
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                let correct = 0;
+                let hasWrong = false;
+
+                // Check each answer
+                this.questions.forEach((q, idx) => {
+                    const input = document.querySelector(`.mul-input[data-idx="${idx}"]`);
+                    const questionElement = document.getElementById(`mul-q${idx}`);
+                    const iconElement = document.getElementById(`mul-icon-${idx}`);
+
+                    if (!input || !questionElement) return;
+
+                    const userAnswer = this.userAnswers[idx];
+                    const isCorrect = userAnswer === q.result;
+
+                    // Disable input
+                    input.disabled = true;
+
+                    // Show result
+                    if (iconElement) {
+                        iconElement.classList.remove('hidden');
+
+                        if (isCorrect) {
+                            correct++;
+                            playSound('correct-sound');
+                            questionElement.classList.add('correct');
+                            iconElement.innerHTML = `
+                                <div class="bg-green-100 text-green-800 p-2 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-check-circle text-xl mr-2"></i>
+                                    <span class="font-bold">Đúng!</span>
+                                </div>`;
+                        } else {
+                            hasWrong = true;
+                            playSound('wrong-sound');
+                            questionElement.classList.add('wrong');
+                            iconElement.innerHTML = `
+                                <div class="bg-red-100 text-red-800 p-2 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-times-circle text-xl mr-2"></i>
+                                    <span class="font-bold">Sai! Đáp án: ${q.result}</span>
+                                </div>`;
+                        }
+                    }
+                });
+
+                // Show result section
+                const resultSection = document.getElementById('mul-result');
+                const scoreText = document.getElementById('mul-score-text');
+                const scoreMsg = document.getElementById('mul-score-msg');
+                const finalStars = document.getElementById('mul-final-stars');
+                const timeTakenElement = document.getElementById('mul-time-taken');
+                const accuracyElement = document.getElementById('mul-accuracy');
+                const reviewButton = document.getElementById('mul-review-btn');
+
+                if (resultSection) {
+                    resultSection.classList.remove('hidden');
+                    resultSection.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                // Update score
+                if (scoreText) {
+                    scoreText.textContent = `${correct}/${this.questions.length}`;
+                }
+
+                // Update message
+                if (scoreMsg) {
+                    const percentage = (correct / this.questions.length) * 100;
+                    if (percentage === 100) {
+                        scoreMsg.textContent = "Xuất sắc! Bé thuộc bảng cửu chương rồi! 🏆";
+                        playSound('win-sound');
+                        fireConfetti();
+                    } else if (percentage >= 80) {
+                        scoreMsg.textContent = "Rất tốt! Tiếp tục phát huy nhé! 💪";
+                    } else if (percentage >= 60) {
+                        scoreMsg.textContent = "Khá lắm! Ôn tập thêm một chút nhé! 👍";
+                    } else {
+                        scoreMsg.textContent = "Cần ôn tập thêm bảng cửu chương nhé! ❤️";
+                    }
+                }
+
+                // Update stars
+                this.updateStars(correct, this.questions.length, 'mul-final-stars');
+
+                // Update time and accuracy
+                if (timeTakenElement) {
+                    const timedMode = document.getElementById('mul-timed')?.checked || true;
+                    if (timedMode) {
+                        timeTakenElement.textContent = `Thời gian: ${formatTime(this.timeTaken)}`;
+                    } else {
+                        timeTakenElement.textContent = `Chế độ không tính giờ`;
+                    }
+                }
+
+                if (accuracyElement) {
+                    const accuracy = ((correct / this.questions.length) * 100).toFixed(0);
+                    accuracyElement.textContent = `Độ chính xác: ${accuracy}%`;
+                }
+
+                // Show review button if there are wrong answers
+                if (reviewButton) {
+                    if (hasWrong) {
+                        reviewButton.classList.remove('hidden');
+                    } else {
+                        reviewButton.classList.add('hidden');
+                    }
+                }
+
+                // Hide submit button
+                document.getElementById('mul-btn-submit').classList.add('hidden');
+
+                // Save to history
+                saveHistory(this.key, correct, this.questions.length, this.timeTaken);
+            },
+
+            resetQuiz: function () {
+                // Hide quiz area
+                document.getElementById('mul-quiz-area').classList.add('hidden');
+                document.getElementById('mul-result').classList.add('hidden');
+
+                // Reset timer
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            reviewWrongAnswers: function () {
+                alert("Chức năng xem lại câu sai đang được phát triển. Ở phiên bản tương lai, bé sẽ có thể xem lại và làm lại các câu đã sai!");
+            },
+
+            toggleHistory: function () {
+                const practiceView = document.getElementById('mul-view-practice');
+                const historyView = document.getElementById('mul-view-history');
+
+                if (historyView.classList.contains('hidden')) {
+                    // Switch to history view
+                    practiceView.classList.add('hidden');
+                    historyView.classList.remove('hidden');
+
+                    // Load history
+                    renderHistoryTable(this.key, 'mul-history-list', 'mul-history-empty');
+                } else {
+                    // Switch back to practice view
+                    historyView.classList.add('hidden');
+                    practiceView.classList.remove('hidden');
+                }
+            },
+
+            clearHistory: function () {
+                if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử luyện tập không?")) {
+                    localStorage.removeItem(this.key);
+                    renderHistoryTable(this.key, 'mul-history-list', 'mul-history-empty');
+                }
+            }
+        };
+
+        // === DIV MODULE (PHÉP CHIA) ===
+        const Div = {
+            questions: [],
+            userAnswers: [],
+            startTime: null,
+            timerInterval: null,
+            timeTaken: 0,
+            key: 'math_quiz_division_history',
+
+            init: function () {
+                // Initialize division options
+                const optionsContainer = document.getElementById('div-options');
+                if (optionsContainer) {
+                    let html = '';
+
+                    // Add "All" option
+                    html += `
+                    <label class="option-card flex flex-col items-center justify-center p-3 bg-gradient-to-br from-green-50 to-white border-2 border-green-200 rounded-xl">
+                        <input type="checkbox" id="div-all" class="h-5 w-5 accent-primary-green mb-2" onchange="Div.toggleAll(this)">
+                        <div class="text-center">
+                            <div class="text-2xl mb-1">⭐</div>
+                            <div class="font-black">Tất cả</div>
+                        </div>
+                    </label>`;
+
+                    // Add divisors 2-9
+                    for (let i = 2; i <= 9; i++) {
+                        html += `
+                        <label class="option-card flex flex-col items-center justify-center p-3 bg-gradient-to-br from-green-50 to-white border-2 border-green-200 rounded-xl">
+                            <input type="checkbox" value="${i}" class="div-cb h-5 w-5 accent-primary-green mb-2">
+                            <div class="text-center">
+                                <div class="text-2xl mb-1">${i}</div>
+                                <div class="font-black">Chia ${i}</div>
+                            </div>
+                        </label>`;
+                    }
+
+                    optionsContainer.innerHTML = html;
+                }
+
+                // Initialize slider
+                const slider = document.getElementById('div-numQuestions');
+                const display = document.getElementById('div-numDisplay');
+
+                if (slider && display) {
+                    slider.addEventListener('input', function () {
+                        display.textContent = this.value;
+                    });
+                }
+
+                // Initialize "Select All" checkbox
+                const selectAllCheckbox = document.getElementById('div-all');
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.checked = true;
+                    this.toggleAll(selectAllCheckbox);
+                }
+            },
+
+            toggleAll: function (source) {
+                const checkboxes = document.querySelectorAll('.div-cb');
+                checkboxes.forEach(cb => {
+                    cb.checked = source.checked;
+                });
+            },
+
+            showInstructions: function () {
+                alert(`HƯỚNG DẪN LUYỆN TẬP PHÉP CHIA:\n\n1. Chọn số chia muốn luyện tập (hoặc chọn Tất cả)\n2. Điều chỉnh số câu hỏi bằng thanh trượt\n3. Chọn chế độ làm bài (có tính giờ hoặc có dư)\n4. Nhấn "BẮT ĐẦU" để bắt đầu\n5. Nhập đáp án vào ô trống và nhấn Enter để chuyển câu tiếp theo\n6. Nhấn "NỘP BÀI" khi hoàn thành\n\nMỗi câu đúng sẽ được 1 sao vàng! Chúc bé học vui!`);
+            },
+
+            generateQuiz: function () {
+                const selectedDivisors = Array.from(document.querySelectorAll('.div-cb:checked')).map(cb => parseInt(cb.value));
+                const numQuestions = parseInt(document.getElementById('div-numQuestions').value) || 10;
+                const includeRemainder = document.getElementById('div-remainder')?.checked || false;
+
+                if (selectedDivisors.length === 0) {
+                    alert("Vui lòng chọn ít nhất một số chia!");
+                    return;
+                }
+
+                this.questions = [];
+
+                // Generate questions
+                for (let i = 0; i < numQuestions; i++) {
+                    const divisor = selectedDivisors[Math.floor(Math.random() * selectedDivisors.length)];
+
+                    if (includeRemainder && Math.random() > 0.7) {
+                        // Include some division with remainder (30% chance)
+                        const quotient = rand(1, 10);
+                        const remainder = rand(0, divisor - 1);
+                        const dividend = divisor * quotient + remainder;
+
+                        this.questions.push({
+                            text: `${dividend} ÷ ${divisor}`,
+                            result: quotient,
+                            remainder: remainder,
+                            hasRemainder: true,
+                            divisor: divisor,
+                            dividend: dividend
+                        });
+                    } else {
+                        // Simple division without remainder
+                        const quotient = rand(1, 10);
+                        const dividend = divisor * quotient;
+
+                        this.questions.push({
+                            text: `${dividend} ÷ ${divisor}`,
+                            result: quotient,
+                            remainder: 0,
+                            hasRemainder: false,
+                            divisor: divisor,
+                            dividend: dividend
+                        });
+                    }
+                }
+
+                this.renderQuiz();
+            },
+
+            renderQuiz: function () {
+                const list = document.getElementById('div-questions-list');
+                if (!list) return;
+
+                list.innerHTML = '';
+                this.userAnswers = new Array(this.questions.length).fill(null);
+
+                this.questions.forEach((q, idx) => {
+                    const remainderText = q.hasRemainder ? ' (có dư)' : '';
+                    const html = `
+                    <div class="question-item bubble bg-white p-5" id="div-q${idx}">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center w-full">
+                                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gradient-to-r from-primary-green to-green-500 text-white rounded-full text-lg font-black mr-4">
+                                    ${idx + 1}
+                                </div>
+                                <div class="text-2xl sm:text-3xl font-black">
+                                    ${q.text.replace('÷', '<span class="text-primary-green font-black mx-1">÷</span>')} = 
+                                    ${q.hasRemainder ? '<span class="text-sm text-gray-500 ml-2">(có dư)</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="relative w-full sm:w-40">
+                                <input type="number" 
+                                       data-idx="${idx}" 
+                                       class="div-input number-input w-full h-14 focus:outline-none"
+                                       placeholder="?"
+                                       onkeyup="Div.handleInputKeyup(event, ${idx})"
+                                       oninput="Div.handleInputChange(${idx})">
+                                <div id="div-icon-${idx}" class="mt-2 hidden"></div>
+                            </div>
+                        </div>
+                    </div>`;
+
+                    list.innerHTML += html;
+                });
+
+                // Show quiz area
+                document.getElementById('div-quiz-area').classList.remove('hidden');
+                document.getElementById('div-result').classList.add('hidden');
+
+                // Reset progress
+                document.getElementById('div-progress').style.width = '0%';
+                document.getElementById('div-progress-text').textContent = `0/${this.questions.length}`;
+
+                // Reset stars
+                document.getElementById('div-stars').innerHTML = '☆☆☆☆☆';
+
+                // Start timer if timed mode is enabled
+                const timedMode = document.getElementById('div-timed')?.checked || true;
+                if (timedMode) {
+                    this.startTimer();
+                } else {
+                    document.getElementById('div-timer').textContent = '--:--';
+                }
+
+                // Focus on first input
+                setTimeout(() => {
+                    const firstInput = document.querySelector('.div-input');
+                    if (firstInput) firstInput.focus();
+                }, 100);
+
+                // Scroll to questions
+                document.getElementById('div-questions-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            },
+
+            startTimer: function () {
+                this.startTime = new Date();
+                this.timeTaken = 0;
+
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                this.timerInterval = setInterval(() => {
+                    this.timeTaken++;
+                    const timerElement = document.getElementById('div-timer');
+                    if (timerElement) {
+                        timerElement.textContent = formatTime(this.timeTaken);
+                    }
+                }, 1000);
+            },
+
+            handleInputKeyup: function (event, idx) {
+                if (event.key === 'Enter') {
+                    // Move to next input or submit if last
+                    const inputs = document.querySelectorAll('.div-input');
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else {
+                        // Last input, focus on submit button
+                        document.getElementById('div-btn-submit').focus();
+                    }
+                }
+
+                // Update progress
+                this.updateProgress();
+            },
+
+            handleInputChange: function (idx) {
+                const input = document.querySelector(`.div-input[data-idx="${idx}"]`);
+                if (input && input.value !== '') {
+                    this.userAnswers[idx] = parseInt(input.value);
+                } else {
+                    this.userAnswers[idx] = null;
+                }
+
+                // Update progress
+                this.updateProgress();
+            },
+
+            updateProgress: function () {
+                const answered = this.userAnswers.filter(a => a !== null).length;
+                const total = this.questions.length;
+                const percentage = (answered / total) * 100;
+
+                const progressBar = document.getElementById('div-progress');
+                const progressText = document.getElementById('div-progress-text');
+
+                if (progressBar) {
+                    progressBar.style.width = `${percentage}%`;
+                }
+
+                if (progressText) {
+                    progressText.textContent = `${answered}/${total}`;
+                }
+
+                // Update stars based on correct answers so far (if we were to submit now)
+                let correct = 0;
+                for (let i = 0; i < this.questions.length; i++) {
+                    if (this.userAnswers[i] === this.questions[i].result) {
+                        correct++;
+                    }
+                }
+
+                this.updateStars(correct, total, 'div-stars');
+            },
+
+            updateStars: function (correct, total, elementId) {
+                const starsElement = document.getElementById(elementId);
+                if (!starsElement) return;
+
+                const starCount = Math.round((correct / total) * 5);
+                let starsHtml = '';
+
+                for (let i = 0; i < 5; i++) {
+                    if (i < starCount) {
+                        starsHtml += '<i class="fa-solid fa-star"></i>';
+                    } else {
+                        starsHtml += '<i class="fa-regular fa-star"></i>';
+                    }
+                }
+
+                starsElement.innerHTML = starsHtml;
+            },
+
+            submitAnswers: function () {
+                // Stop timer
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                let correct = 0;
+                let hasWrong = false;
+
+                // Check each answer
+                this.questions.forEach((q, idx) => {
+                    const input = document.querySelector(`.div-input[data-idx="${idx}"]`);
+                    const questionElement = document.getElementById(`div-q${idx}`);
+                    const iconElement = document.getElementById(`div-icon-${idx}`);
+
+                    if (!input || !questionElement) return;
+
+                    const userAnswer = this.userAnswers[idx];
+                    const isCorrect = userAnswer === q.result;
+
+                    // Disable input
+                    input.disabled = true;
+
+                    // Show result
+                    if (iconElement) {
+                        iconElement.classList.remove('hidden');
+
+                        if (isCorrect) {
+                            correct++;
+                            playSound('correct-sound');
+                            questionElement.classList.add('correct');
+
+                            let correctText = 'Đúng!';
+                            if (q.hasRemainder) {
+                                correctText += ` Dư: ${q.remainder}`;
+                            }
+
+                            iconElement.innerHTML = `
+                                <div class="bg-green-100 text-green-800 p-2 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-check-circle text-xl mr-2"></i>
+                                    <span class="font-bold">${correctText}</span>
+                                </div>`;
+                        } else {
+                            hasWrong = true;
+                            playSound('wrong-sound');
+                            questionElement.classList.add('wrong');
+
+                            let correctAnswerText = `Đáp án: ${q.result}`;
+                            if (q.hasRemainder) {
+                                correctAnswerText += ` dư ${q.remainder}`;
+                            }
+
+                            iconElement.innerHTML = `
+                                <div class="bg-red-100 text-red-800 p-2 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-times-circle text-xl mr-2"></i>
+                                    <span class="font-bold">Sai! ${correctAnswerText}</span>
+                                </div>`;
+                        }
+                    }
+                });
+
+                // Show result section
+                const resultSection = document.getElementById('div-result');
+                const scoreText = document.getElementById('div-score-text');
+                const scoreMsg = document.getElementById('div-score-msg');
+                const finalStars = document.getElementById('div-final-stars');
+                const timeTakenElement = document.getElementById('div-time-taken');
+                const accuracyElement = document.getElementById('div-accuracy');
+                const reviewButton = document.getElementById('div-review-btn');
+
+                if (resultSection) {
+                    resultSection.classList.remove('hidden');
+                    resultSection.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                // Update score
+                if (scoreText) {
+                    scoreText.textContent = `${correct}/${this.questions.length}`;
+                }
+
+                // Update message
+                if (scoreMsg) {
+                    const percentage = (correct / this.questions.length) * 100;
+                    if (percentage === 100) {
+                        scoreMsg.textContent = "Xuất sắc! Bé giỏi phép chia quá! 🏆";
+                        playSound('win-sound');
+                        fireConfetti();
+                    } else if (percentage >= 80) {
+                        scoreMsg.textContent = "Rất tốt! Tiếp tục phát huy nhé! 💪";
+                    } else if (percentage >= 60) {
+                        scoreMsg.textContent = "Khá lắm! Ôn tập thêm một chút nhé! 👍";
+                    } else {
+                        scoreMsg.textContent = "Cần ôn tập thêm phép chia nhé! ❤️";
+                    }
+                }
+
+                // Update stars
+                this.updateStars(correct, this.questions.length, 'div-final-stars');
+
+                // Update time and accuracy
+                if (timeTakenElement) {
+                    const timedMode = document.getElementById('div-timed')?.checked || true;
+                    if (timedMode) {
+                        timeTakenElement.textContent = `Thời gian: ${formatTime(this.timeTaken)}`;
+                    } else {
+                        timeTakenElement.textContent = `Chế độ không tính giờ`;
+                    }
+                }
+
+                if (accuracyElement) {
+                    const accuracy = ((correct / this.questions.length) * 100).toFixed(0);
+                    accuracyElement.textContent = `Độ chính xác: ${accuracy}%`;
+                }
+
+                // Show review button if there are wrong answers
+                if (reviewButton) {
+                    if (hasWrong) {
+                        reviewButton.classList.remove('hidden');
+                    } else {
+                        reviewButton.classList.add('hidden');
+                    }
+                }
+
+                // Hide submit button
+                document.getElementById('div-btn-submit').classList.add('hidden');
+
+                // Save to history
+                saveHistory(this.key, correct, this.questions.length, this.timeTaken);
+            },
+
+            resetQuiz: function () {
+                // Hide quiz area
+                document.getElementById('div-quiz-area').classList.add('hidden');
+                document.getElementById('div-result').classList.add('hidden');
+
+                // Reset timer
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            reviewWrongAnswers: function () {
+                alert("Chức năng xem lại câu sai đang được phát triển. Ở phiên bản tương lai, bé sẽ có thể xem lại và làm lại các câu đã sai!");
+            },
+
+            toggleHistory: function () {
+                const practiceView = document.getElementById('div-view-practice');
+                const historyView = document.getElementById('div-view-history');
+
+                if (historyView.classList.contains('hidden')) {
+                    // Switch to history view
+                    practiceView.classList.add('hidden');
+                    historyView.classList.remove('hidden');
+
+                    // Load history
+                    renderHistoryTable(this.key, 'div-history-list', 'div-history-empty');
+                } else {
+                    // Switch back to practice view
+                    historyView.classList.add('hidden');
+                    practiceView.classList.remove('hidden');
+                }
+            },
+
+            clearHistory: function () {
+                if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử luyện tập không?")) {
+                    localStorage.removeItem(this.key);
+                    renderHistoryTable(this.key, 'div-history-list', 'div-history-empty');
+                }
+            }
+        };
+
+        // Initialize all modules when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            AddSub.init();
+            Mul.init();
+            Div.init();
+
+            // Set default module
+            switchModule('addsub');
+        });
+    </script>
+</body>
+
+</html>
